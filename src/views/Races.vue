@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import Race from '@/components/Race.vue';
-import RaceModel from '@/models/RaceModel';
+import { RaceModel } from '@/models/RaceModel';
 import { defineComponent } from 'vue';
 
 export default defineComponent({

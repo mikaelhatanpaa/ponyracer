@@ -1,6 +1,6 @@
-import PonyModel from './PonyModel';
+import { PonyModel } from './PonyModel';
 
-export default interface RaceModel {
+export interface RaceModel {
   id: number | string;
   name: string;
   ponies: Array<PonyModel>;
