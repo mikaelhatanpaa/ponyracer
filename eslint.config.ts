@@ -13,7 +13,7 @@ export default defineConfigWithVueTs([
   },
   {
     name: 'app/files-to-ignore',
-    ignores: ['dist', 'coverage', 'results']
+    ignores: ['dist', 'coverage', 'results', '.vite/**', 'node_modules/**']
   },
   pluginVue.configs['flat/recommended'],
   vueTsConfigs.strict,
