@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { mount } from '@vue/test-utils';
 import Race from '@/components/Race.vue';
-import RaceModel from '@/models/RaceModel';
+import { RaceModel } from '@/models/RaceModel';
 
 describe('Race.vue', () => {
   test('should display a race name and its ponies', () => {
@@ -29,6 +29,12 @@ describe('Race.vue', () => {
 
     // The h2 element should contain the race name
     expect(raceName.text()).toContain('Paris');
+
+    // You need a p element for the race start instant
+    const raceStart = wrapper.get('p');
+
+    // The p element should contain the race start instant transformed by the fromNow function
+    expect(raceStart.text()).toContain('ago');
 
     const ponies = wrapper.findAll('li');
 
