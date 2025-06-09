@@ -13,26 +13,15 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { RaceModel } from '@/models/RaceModel';
 import fromNow from '@/utils/FromNow';
-import { computed, defineComponent, PropType } from 'vue';
+import { computed, defineProps } from 'vue';
 import Pony from './Pony.vue';
 
-export default defineComponent({
-  name: 'Race',
-  components: {
-    Pony
-  },
-  props: {
-    raceModel: {
-      type: Object as PropType<RaceModel>,
-      required: true
-    }
-  },
-  setup(props) {
-    const startInstant = computed(() => fromNow(props.raceModel.startInstant));
-    return { startInstant };
-  }
-});
+const { raceModel } = defineProps<{
+  raceModel: RaceModel;
+}>();
+
+const startInstant = computed(() => fromNow(raceModel.startInstant));
 </script>

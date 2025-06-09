@@ -6,19 +6,9 @@
   </main>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Navbar from './components/Navbar.vue';
-import { defineComponent } from 'vue';
 import Races from './views/Races.vue';
-
-export default defineComponent({
-  name: 'App',
-
-  components: {
-    Navbar,
-    Races
-  }
-});
 </script>
 
 <style></style>

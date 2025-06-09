@@ -13,7 +13,7 @@ export default defineConfigWithVueTs([
   },
   {
     name: 'app/files-to-ignore',
-    ignores: ['dist', 'coverage', 'results', '.vite/**', 'node_modules/**']
+    ignores: ['dist', 'coverage', 'results', '.vite']
   },
   pluginVue.configs['flat/recommended'],
   vueTsConfigs.strict,
@@ -41,6 +41,7 @@ export default defineConfigWithVueTs([
       eqeqeq: ['error', 'always', { null: 'ignore' }],
       'vue/attribute-hyphenation': 'off',
       'vue/attributes-order': 'off',
+      'vue/component-api-style': ['error', ['script-setup']],
       'vue/define-emits-declaration': 'error',
       'vue/define-props-declaration': 'error',
       'vue/v-on-event-hyphenation': 'off',

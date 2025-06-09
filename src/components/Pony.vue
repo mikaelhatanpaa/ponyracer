@@ -7,27 +7,20 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { PonyModel } from '@/models/PonyModel';
-import { defineComponent, PropType, computed } from 'vue';
+import { computed, defineProps, defineEmits } from 'vue';
 
-export default defineComponent({
-  name: 'Pony',
-  props: {
-    ponyModel: {
-      type: Object as PropType<PonyModel>,
-      required: true
-    }
-  },
-  emits: ['ponySelected'],
-  // Instead of setup(props, ctx) {
-  // Do (much prettier):
-  setup({ ponyModel }, { emit }) {
-    const ponyImageURL = computed(() => '/images/pony-' + ponyModel.color.toLowerCase() + '.gif');
-    const clicked = () => emit('ponySelected');
-    return { ponyImageURL, clicked };
-  }
-});
+const { ponyModel } = defineProps<{
+  ponyModel: PonyModel;
+}>();
+
+const emit = defineEmits<{
+  ponySelected: [];
+}>();
+
+const ponyImageURL = computed(() => '/images/pony-' + ponyModel.color.toLowerCase() + '.gif');
+const clicked = () => emit('ponySelected');
 </script>
 
 <style scoped>
