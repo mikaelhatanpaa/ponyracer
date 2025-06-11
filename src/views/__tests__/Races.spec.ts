@@ -2,6 +2,7 @@ import { describe, expect, test, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import Races from '@/views/Races.vue';
 import Race from '@/components/Race.vue';
+import Alert from '@/components/Alert.vue';
 import { RaceModel } from '@/models/RaceModel';
 
 const mockRaceService = {
@@ -12,7 +13,13 @@ vi.mock('@/composables/RaceService', () => ({
 }));
 
 async function racesWrapper() {
-  const wrapper = mount(Races);
+  const wrapper = mount(Races, {
+    global: {
+      components: {
+        Alert
+      }
+    }
+  });
   await flushPromises();
   return wrapper;
 }
@@ -31,7 +38,7 @@ describe('Races.vue', () => {
     expect(raceComponents).toHaveLength(2);
 
     // No alert should be displayed
-    const alert = wrapper.find('div.alert');
+    const alert = wrapper.findComponent(Alert);
 
     expect(alert.exists()).toBe(false);
   });
@@ -45,7 +52,7 @@ describe('Races.vue', () => {
     // You should have no `Race` component in your template
     expect(raceComponents).toHaveLength(0);
 
-    const alert = wrapper.get('div.alert');
+    const alert = wrapper.getComponent(Alert);
 
     // You should have an alert displayed
     expect(alert.text()).toContain('An error occurred while loading');
@@ -53,6 +60,6 @@ describe('Races.vue', () => {
     await alert.find('button').trigger('click');
 
     // The alert should be closed when the button is clicked
-    expect(wrapper.find('div.alert').exists()).toBe(false);
+    expect(wrapper.findComponent(Alert).exists()).toBe(false);
   });
 });
