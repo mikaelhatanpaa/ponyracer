@@ -4,8 +4,8 @@
       <h1>Ponyracer <small>Always a pleasure to bet on ponies</small></h1>
     </div>
     <div>
-      <RouterLink class="btn btn-primary" to="/races">Races</RouterLink>
-      <RouterLink class="btn" to="/register">Register</RouterLink>
+      <RouterLink to="/login" class="btn btn-large btn-primary me-2">Login</RouterLink>
+      <RouterLink to="/register" class="btn btn-large btn-primary">Register</RouterLink>
     </div>
   </div>
 </template>

@@ -27,4 +27,21 @@ describe('useUserService', () => {
     // It should return a user for the `register` function
     expect(userReceived).toStrictEqual(userModel);
   });
+
+  test('should authenticate a user', async () => {
+    vi.spyOn(axios, 'post').mockResolvedValue({ data: userModel } as AxiosResponse<UserModel>);
+
+    const formValues = {
+      login: 'cedric',
+      password: 'password'
+    };
+
+    const userService = useUserService();
+    const userReceived = await userService.authenticate(formValues);
+
+    // It should post the user to the API
+    expect(axios.post).toHaveBeenCalledWith('https://ponyracer.ninja-squad.com/api/users/authentication', formValues);
+    // It should return a user for the `authenticate` function
+    expect(userReceived).toStrictEqual(userModel);
+  });
 });

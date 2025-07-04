@@ -35,7 +35,7 @@ describe('Register', () => {
     errorMessage().should('not.exist');
 
     birthYearInput().clear();
-    errorMessage().should('be.visible').and('contain', 'The birth year is required');
+    errorMessage().should('be.visible').and('contain', 'The birthYear is required');
     birthYearInput().type('1986');
     errorMessage().should('not.exist');
 
