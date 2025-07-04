@@ -2,11 +2,35 @@
 import { describe, expect, test, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
+import { injectRouterMock, RouterMock } from 'vue-router-mock';
+import { createVitestRouterMock } from './router-mock';
 import App from '@/App.vue';
 import Navbar from '@/components/Navbar.vue';
 import Alert from '@/components/Alert.vue';
 
+const HelloComponent = defineComponent({
+  async setup() {
+    await Promise.resolve();
+    return {};
+  },
+  template: 'Hello'
+});
+const ErrorComponent = defineComponent({
+  async setup() {
+    await Promise.reject(new Error('Oops'));
+  },
+  template: 'Error'
+});
+let mockRouter: RouterMock;
+
 function appWrapper(stubs = {}) {
+  mockRouter = createVitestRouterMock({
+    routes: [
+      { path: '/', component: HelloComponent },
+      { path: '/error', component: ErrorComponent }
+    ]
+  });
+  injectRouterMock(mockRouter);
   return mount(App, {
     global: {
       components: {
@@ -18,12 +42,6 @@ function appWrapper(stubs = {}) {
 }
 
 describe('App.vue', () => {
-  test('renders a title', () => {
-    const wrapper = appWrapper();
-
-    expect(wrapper.get('h1').text()).toBe('Ponyracer');
-  });
-
   test('renders the navbar', () => {
     const wrapper = appWrapper();
     const navbar = wrapper.findComponent(Navbar);
@@ -32,15 +50,11 @@ describe('App.vue', () => {
     expect(navbar.exists()).toBe(true);
   });
 
-  test('renders the races list inside a Suspense component', async () => {
+  test('renders the router view inside a Suspense component', async () => {
     const wrapper = appWrapper({
-      Races: defineComponent({
-        async setup() {
-          return { result: 'Hello' };
-        },
-        template: '<div>{{ result }}</div>'
-      })
+      RouterView: false
     });
+    await mockRouter.push('/');
 
     expect(wrapper.html()).toContain('Loading');
 
@@ -50,7 +64,7 @@ describe('App.vue', () => {
     expect(wrapper.html()).toContain('Hello');
   });
 
-  test('renders an error if races list does not load', async () => {
+  test('renders an error if router view does not load', async () => {
     vi.spyOn(console, 'warn').mockReturnValue();
     const wrapper = appWrapper({
       Alert: defineComponent({
@@ -59,13 +73,9 @@ describe('App.vue', () => {
         emits: ['dismissed'],
         template: '<slot></slot>'
       }),
-      Races: defineComponent({
-        async setup() {
-          await Promise.reject(new Error('Oops'));
-        },
-        template: '<div>Error</div>'
-      })
+      RouterView: false
     });
+    await mockRouter.push('/error');
 
     expect(wrapper.html()).toContain('Loading');
 

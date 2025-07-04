@@ -2,5 +2,6 @@ import '@/assets/main.css';
 import { createApp } from 'vue';
 import App from './App.vue';
 import Alert from './components/Alert.vue';
+import routerPlugin from './router';
 
-createApp(App).component('Alert', Alert).mount('#app');
+createApp(App).component('Alert', Alert).use(routerPlugin).mount('#app');
