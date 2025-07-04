@@ -5,6 +5,7 @@
     </div>
     <div>
       <RouterLink class="btn btn-primary" to="/races">Races</RouterLink>
+      <RouterLink class="btn" to="/register">Register</RouterLink>
     </div>
   </div>
 </template>

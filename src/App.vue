@@ -15,7 +15,6 @@
 <script setup lang="ts">
 import { Suspense } from 'vue';
 import Navbar from './components/Navbar.vue';
-import Races from './views/Races.vue';
 import { ref } from 'vue';
 import { onErrorCaptured } from 'vue';
 

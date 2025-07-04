@@ -5,9 +5,9 @@
     "passes": 3,
     "pending": 0,
     "failures": 0,
-    "start": "2025-07-04T14:40:35.680Z",
-    "end": "2025-07-04T14:40:36.396Z",
-    "duration": 716,
+    "start": "2025-07-04T15:59:49.454Z",
+    "end": "2025-07-04T15:59:50.185Z",
+    "duration": 731,
     "testsRegistered": 3,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "63f7319f-c177-40a1-a797-21a5964924ce",
+      "uuid": "586daa4f-ac50-4d00-93a1-b2376182f6a7",
       "title": "",
       "fullFile": "cypress/e2e/races.cy.ts",
       "file": "cypress/e2e/races.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "dcc0cf9d-d2e1-4e23-a3c6-3d8057eef179",
+          "uuid": "5fd63b5c-8af7-4a5f-9156-6000567e0244",
           "title": "Races",
           "fullFile": "",
           "file": "",
@@ -38,7 +38,7 @@
               "title": "should display a race list",
               "fullTitle": "Races should display a race list",
               "timedOut": null,
-              "duration": 81,
+              "duration": 85,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -47,8 +47,8 @@
               "context": null,
               "code": "cy.visit('/races');\n// loading\ncy.contains('div', 'Loading');\ncy.wait('@getRaces');\ncy.get('h2').should('have.length', 2);\ncy.get('p').should('have.length', 2).and('contain', 'ago');\ncy.get('div.alert').should('not.exist');",
               "err": {},
-              "uuid": "1f1ada3c-96b2-4b06-891f-48db18bb201c",
-              "parentUUID": "dcc0cf9d-d2e1-4e23-a3c6-3d8057eef179",
+              "uuid": "4c646bf5-b58b-46b7-b93b-a996fbe3cad7",
+              "parentUUID": "5fd63b5c-8af7-4a5f-9156-6000567e0244",
               "isHook": false,
               "skipped": false
             },
@@ -56,7 +56,7 @@
               "title": "should display a loading error",
               "fullTitle": "Races should display a loading error",
               "timedOut": null,
-              "duration": 545,
+              "duration": 552,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -65,8 +65,8 @@
               "context": null,
               "code": "// override the response to have an error\ncy.intercept('GET', 'api/races?status=PENDING', {\n    statusCode: 404,\n    delay: 500\n}).as('getRacesError');\ncy.visit('/races');\n// loading\ncy.contains('div', 'Loading');\ncy.wait('@getRacesError');\ncy.contains('div.alert', 'An error occurred while loading');",
               "err": {},
-              "uuid": "9e6ad449-368e-4fb3-8b3a-fb1756a00ee8",
-              "parentUUID": "dcc0cf9d-d2e1-4e23-a3c6-3d8057eef179",
+              "uuid": "08263d0a-4b6e-48f1-a428-3c65ee689355",
+              "parentUUID": "5fd63b5c-8af7-4a5f-9156-6000567e0244",
               "isHook": false,
               "skipped": false
             },
@@ -83,22 +83,22 @@
               "context": null,
               "code": "cy.visit('/races');\ncy.wait('@getRaces');\ncy.get('figure').should('have.length', 10);\ncy.get('img').should('have.length', 10);\ncy.get('figcaption').should('have.length', 10);",
               "err": {},
-              "uuid": "e7f3afb3-49d9-4d97-b656-703cfe16ba10",
-              "parentUUID": "dcc0cf9d-d2e1-4e23-a3c6-3d8057eef179",
+              "uuid": "1337ff08-8d40-49c8-8ecb-4b836b25f132",
+              "parentUUID": "5fd63b5c-8af7-4a5f-9156-6000567e0244",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "1f1ada3c-96b2-4b06-891f-48db18bb201c",
-            "9e6ad449-368e-4fb3-8b3a-fb1756a00ee8",
-            "e7f3afb3-49d9-4d97-b656-703cfe16ba10"
+            "4c646bf5-b58b-46b7-b93b-a996fbe3cad7",
+            "08263d0a-4b6e-48f1-a428-3c65ee689355",
+            "1337ff08-8d40-49c8-8ecb-4b836b25f132"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 684,
+          "duration": 695,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
