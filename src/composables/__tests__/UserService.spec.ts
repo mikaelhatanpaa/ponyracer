@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
 import axios, { AxiosResponse } from 'axios';
 import { useUserService } from '@/composables/UserService';
-import { UserModel } from '@/models/UserModel';
+import UserModel from '@/models/UserModel';
 
 const userModel: UserModel = {
   birthYear: 1986,

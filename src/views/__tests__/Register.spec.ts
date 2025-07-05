@@ -73,6 +73,16 @@ describe('Register.vue', () => {
     // The login label should have the CSS class text-danger when in error
     expect(label.classes()).toContain('text-danger');
 
+    await loginInput.setValue('ce');
+    await flushPromises();
+
+    // The login field should display an error
+    expect(loginError.text()).toContain('The login must be at least 3 characters');
+    // The login input should have the CSS class is-invalid when in error
+    expect(loginInput.classes()).toContain('is-invalid');
+    // The login label should have the CSS class text-danger when in error
+    expect(label.classes()).toContain('text-danger');
+
     await loginInput.setValue('cedric');
     await flushPromises();
 
@@ -113,6 +123,8 @@ describe('Register.vue', () => {
     expect(label.classes()).toContain('text-danger');
 
     await passwordInput.setValue('password');
+    const confirmPasswordInput = wrapper.findAll('input[type=password]')[1];
+    await confirmPasswordInput.setValue('password');
     await flushPromises();
 
     // The password field error should not be displayed
@@ -120,6 +132,55 @@ describe('Register.vue', () => {
     // The password input should not have the CSS class is-invalid when not in error
     expect(passwordInput.classes()).not.toContain('is-invalid');
     // The password label should not have the CSS class text-danger when not in error
+    expect(label.classes()).not.toContain('text-danger');
+  });
+
+  test('should display errors for password confirmation', async () => {
+    const wrapper = await registerWrapper();
+
+    const passwordInput = wrapper.findAll('input[type=password]')[0];
+    const confirmPasswordInput = wrapper.findAll('input[type=password]')[1];
+
+    // The confirm password input should not have the CSS class is-invalid when not dirty
+    expect(confirmPasswordInput.classes()).not.toContain('is-invalid');
+    // The confirm password field error should not be displayed when not dirty
+    expect(wrapper.find('.invalid-feedback').exists()).toBe(false);
+
+    // The confirm password label should not have the CSS class text-danger when not dirty
+    const label = wrapper.findAll('label')[2];
+
+    expect(label.classes()).not.toContain('text-danger');
+
+    await confirmPasswordInput.setValue('password');
+    await flushPromises();
+    // The confirm password field should display an error
+    const confirmPasswordError = wrapper.get('.invalid-feedback');
+
+    expect(confirmPasswordError.text()).toContain('The password confirmation does not match');
+    // The confirm password input should have the CSS class is-invalid when in error
+    expect(confirmPasswordInput.classes()).toContain('is-invalid');
+    // The confirm password label should have the CSS class text-danger when in error
+    expect(label.classes()).toContain('text-danger');
+
+    await confirmPasswordInput.setValue('');
+    await flushPromises();
+
+    // The confirm password field should display an error
+    expect(confirmPasswordError.text()).toContain('The password confirmation is required');
+    // The confirm password input should have the CSS class is-invalid when in error
+    expect(confirmPasswordInput.classes()).toContain('is-invalid');
+    // The confirm password label should have the CSS class text-danger when in error
+    expect(label.classes()).toContain('text-danger');
+
+    await passwordInput.setValue('password');
+    await confirmPasswordInput.setValue('password');
+    await flushPromises();
+
+    // The confirm password field error should not be displayed
+    expect(wrapper.find('.invalid-feedback').exists()).toBe(false);
+    // The confirm password input should not have the CSS class is-invalid when not in error
+    expect(confirmPasswordInput.classes()).not.toContain('is-invalid');
+    // The confirm password label should not have the CSS class text-danger when not in error
     expect(label.classes()).not.toContain('text-danger');
   });
 
@@ -137,7 +198,7 @@ describe('Register.vue', () => {
     expect(wrapper.find('.invalid-feedback').exists()).toBe(false);
 
     // The birthYear label should not have the CSS class text-danger when not dirty
-    const label = wrapper.findAll('label')[2];
+    const label = wrapper.findAll('label')[3];
 
     expect(label.classes()).not.toContain('text-danger');
 
@@ -148,7 +209,27 @@ describe('Register.vue', () => {
     // The birthYear field should display an error
     const birthYearError = wrapper.get('.invalid-feedback');
 
-    expect(birthYearError.text()).toContain('The birthYear is required');
+    expect(birthYearError.text()).toContain('The birth year is required');
+    // The birthYear input should have the CSS class is-invalid when in error
+    expect(birthYearInput.classes()).toContain('is-invalid');
+    // The birthYear label should have the CSS class text-danger when in error
+    expect(label.classes()).toContain('text-danger');
+
+    await birthYearInput.setValue(1899);
+    await flushPromises();
+
+    // The birthYear field should display an error if the year is before 1900
+    expect(birthYearError.text()).toContain('The birth year must be 1900 or more');
+    // The birthYear input should have the CSS class is-invalid when in error
+    expect(birthYearInput.classes()).toContain('is-invalid');
+    // The birthYear label should have the CSS class text-danger when in error
+    expect(label.classes()).toContain('text-danger');
+
+    await birthYearInput.setValue(new Date().getFullYear() - 17);
+    await flushPromises();
+
+    // The birthYear field should display an error if the user is not old enough
+    expect(birthYearError.text()).toContain(`You're not old enough to bet on ponies`);
     // The birthYear input should have the CSS class is-invalid when in error
     expect(birthYearInput.classes()).toContain('is-invalid');
     // The birthYear label should have the CSS class text-danger when in error
@@ -175,6 +256,8 @@ describe('Register.vue', () => {
     await loginInput.setValue('cedric');
     const passwordInput = wrapper.get('input[type=password]');
     await passwordInput.setValue('password');
+    const confirmPasswordInput = wrapper.findAll('input[type=password]')[1];
+    await confirmPasswordInput.setValue('password');
     const birthYearInput = wrapper.get('input[type=number]');
     await birthYearInput.setValue(1986);
     await flushPromises();
@@ -218,6 +301,8 @@ describe('Register.vue', () => {
     await loginInput.setValue('cedric');
     const passwordInput = wrapper.get('input[type=password]');
     await passwordInput.setValue('password');
+    const confirmPasswordInput = wrapper.findAll('input[type=password]')[1];
+    await confirmPasswordInput.setValue('password');
     const birthYearInput = wrapper.get('input[type=number]');
     await birthYearInput.setValue(1986);
     await flushPromises();

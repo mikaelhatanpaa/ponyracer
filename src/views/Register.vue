@@ -8,7 +8,7 @@
       </Alert>
 
       <Form @submit="register($event)" :initialValues="initialValues" v-slot="{ meta: formMeta }">
-        <Field name="login" rules="required" v-slot="{ field, meta }">
+        <Field name="login" rules="required|min:3" v-slot="{ field, meta }">
           <div class="mb-3">
             <label for="login" class="form-label" :class="{ 'text-danger': meta.dirty && !meta.valid }">Login</label>
             <input id="login" class="form-control" :class="{ 'is-invalid': meta.dirty && !meta.valid }" v-bind="field" />
@@ -22,7 +22,20 @@
             <ErrorMessage name="password" class="invalid-feedback" />
           </div>
         </Field>
-        <Field name="birthYear" rules="required" v-slot="{ field, meta }">
+        <Field name="confirmPassword" rules="required|confirmed:@password" label="password confirmation" v-slot="{ field, meta }">
+          <div class="mb-3">
+            <label for="confirm-password" class="form-label" :class="{ 'text-danger': meta.dirty && !meta.valid }">Password</label>
+            <input
+              id="confirm-password"
+              type="password"
+              class="form-control"
+              :class="{ 'is-invalid': meta.dirty && !meta.valid }"
+              v-bind="field"
+            />
+            <ErrorMessage name="confirmPassword" class="invalid-feedback" />
+          </div>
+        </Field>
+        <Field name="birthYear" rules="required|min_value:1900|isOldEnough" label="birth year" v-slot="{ field, meta }">
           <div class="mb-3">
             <label for="birth-year" class="form-label" :class="{ 'text-danger': meta.dirty && !meta.valid }">Birth year</label>
             <input id="birth-year" type="number" class="form-control" :class="{ 'is-invalid': meta.dirty && !meta.valid }" v-bind="field" />

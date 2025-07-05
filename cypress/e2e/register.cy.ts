@@ -18,6 +18,7 @@ describe('Register', () => {
 
     const loginInput = () => cy.get('input').first();
     const passwordInput = () => cy.get('input[type=password]').first();
+    const confirmInput = () => cy.get('input[type=password]').eq(1);
     const birthYearInput = () => cy.get('input[type=number]');
     const errorMessage = () => cy.get('.invalid-feedback');
 
@@ -34,8 +35,20 @@ describe('Register', () => {
     passwordInput().type('pa');
     errorMessage().should('not.exist');
 
+    confirmInput().type('p');
+    confirmInput().clear();
+    errorMessage().should('be.visible').and('contain', 'The password confirmation is required');
+    confirmInput().type('p');
+    errorMessage().should('be.visible').and('contain', 'The password confirmation does not match');
+
+    confirmInput().type('a');
+    errorMessage().should('not.exist');
+
     birthYearInput().clear();
-    errorMessage().should('be.visible').and('contain', 'The birthYear is required');
+    errorMessage().should('be.visible').and('contain', 'The birth year is required');
+    birthYearInput().type(`${new Date().getFullYear() - 17}`);
+    errorMessage().should('be.visible').and('contain', `You're not old enough to bet on ponies`);
+    birthYearInput().clear();
     birthYearInput().type('1986');
     errorMessage().should('not.exist');
 
