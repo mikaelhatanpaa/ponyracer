@@ -8,7 +8,36 @@ describe('Ponyracer', () => {
   };
 
   function startBackend() {
-    cy.intercept('POST', 'api/users/authentication', user).as('authenticateUser');
+    cy.intercept('GET', 'api/races?status=PENDING', [
+      {
+        id: 12,
+        name: 'Paris',
+        ponies: [
+          { id: 1, name: 'Gentle Pie', color: 'YELLOW' },
+          { id: 2, name: 'Big Soda', color: 'ORANGE' },
+          { id: 3, name: 'Gentle Bottle', color: 'PURPLE' },
+          { id: 4, name: 'Superb Whiskey', color: 'GREEN' },
+          { id: 5, name: 'Fast Rainbow', color: 'BLUE' }
+        ],
+        startInstant: '2020-02-18T08:02:00Z'
+      },
+      {
+        id: 13,
+        name: 'Tokyo',
+        ponies: [
+          { id: 6, name: 'Fast Rainbow', color: 'BLUE' },
+          { id: 7, name: 'Gentle Castle', color: 'GREEN' },
+          { id: 8, name: 'Awesome Rock', color: 'PURPLE' },
+          { id: 9, name: 'Little Rainbow', color: 'YELLOW' },
+          { id: 10, name: 'Great Soda', color: 'ORANGE' }
+        ],
+        startInstant: '2020-02-18T08:03:00Z'
+      }
+    ]).as('getRaces');
+  }
+
+  function storeUserInLocalStorage() {
+    localStorage.setItem('rememberMe', JSON.stringify(user));
   }
 
   beforeEach(() => startBackend());
@@ -31,14 +60,9 @@ describe('Ponyracer', () => {
   });
 
   it('should display a navbar collapsed on small screen', () => {
+    storeUserInLocalStorage();
     cy.viewport('iphone-6+');
-    cy.visit('/login');
-
-    cy.get('input').first().type('cedric');
-    cy.get('input[type=password]').type('password');
-    cy.get('form > button').click();
-    cy.wait('@authenticateUser');
-
+    cy.visit('/');
     cy.contains(navbarBrand, 'PonyRacer');
     cy.get(navbarLink).should('not.be.visible');
 
@@ -48,18 +72,38 @@ describe('Ponyracer', () => {
   });
 
   it('should display the logged in user in navbar and a different home', () => {
-    cy.visit('/login');
+    storeUserInLocalStorage();
+    cy.visit('/');
 
-    cy.get('input').first().type('cedric');
-    cy.get('input[type=password]').type('password');
-    cy.get('form > button').click();
-    cy.wait('@authenticateUser');
-
-    cy.location('pathname').should('eq', '/');
     cy.get(navbarLink).contains('Races').should('have.attr', 'href', '/races');
 
     cy.get('#current-user').should('contain', 'cedric').and('contain', '1000');
 
     cy.get('.btn-primary').contains('Races').should('have.attr', 'href', '/races');
+  });
+
+  it('should log out the user', () => {
+    storeUserInLocalStorage();
+    cy.visit('/races');
+    cy.wait('@getRaces');
+
+    // user stored should be displayed
+    cy.get('#current-user').should('contain', 'cedric').and('contain', '1000');
+
+    // logout
+    cy.get('span.fa.fa-power-off').click();
+
+    // should be redirected to home page
+    cy.location('pathname')
+      .should('eq', '/')
+      // and localStorage should be clean
+      .and(() => expect(localStorage.getItem('rememberMe')).to.eq(null));
+    cy.get(navbarLink).should('not.exist');
+
+    // user is not displayed in navbar
+    cy.get('#current-user').should('not.exist');
+
+    // and home page offers the login link
+    cy.get('.btn-primary').contains('Login').should('have.attr', 'href', '/login');
   });
 });

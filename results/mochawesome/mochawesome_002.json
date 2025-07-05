@@ -5,9 +5,9 @@
     "passes": 3,
     "pending": 0,
     "failures": 0,
-    "start": "2025-07-05T16:13:24.371Z",
-    "end": "2025-07-05T16:13:25.089Z",
-    "duration": 718,
+    "start": "2025-07-05T17:31:12.141Z",
+    "end": "2025-07-05T17:31:12.860Z",
+    "duration": 719,
     "testsRegistered": 3,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "ccdee987-cdd6-48b0-9d5b-2363ea4396e6",
+      "uuid": "e010bc66-ac87-4ff0-8e3b-061df1b5dff6",
       "title": "",
       "fullFile": "cypress/e2e/races.cy.ts",
       "file": "cypress/e2e/races.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "0ac83d79-6bd1-469e-84dd-ca94ac368d9e",
+          "uuid": "7355db0c-9184-40d4-bbe9-0bab220b94bc",
           "title": "Races",
           "fullFile": "",
           "file": "",
@@ -38,7 +38,7 @@
               "title": "should display a race list",
               "fullTitle": "Races should display a race list",
               "timedOut": null,
-              "duration": 77,
+              "duration": 79,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -47,8 +47,8 @@
               "context": null,
               "code": "cy.visit('/races');\n// loading\ncy.contains('div', 'Loading');\ncy.wait('@getRaces');\ncy.get('h2').should('have.length', 2);\ncy.get('p').should('have.length', 2).and('contain', 'ago');\ncy.get('div.alert').should('not.exist');",
               "err": {},
-              "uuid": "d5cc253e-826c-4aeb-b6bb-04ebda94d894",
-              "parentUUID": "0ac83d79-6bd1-469e-84dd-ca94ac368d9e",
+              "uuid": "26a2ef6c-dedf-4f72-9c5f-b5fb344fc280",
+              "parentUUID": "7355db0c-9184-40d4-bbe9-0bab220b94bc",
               "isHook": false,
               "skipped": false
             },
@@ -56,7 +56,7 @@
               "title": "should display a loading error",
               "fullTitle": "Races should display a loading error",
               "timedOut": null,
-              "duration": 548,
+              "duration": 545,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -65,8 +65,8 @@
               "context": null,
               "code": "// override the response to have an error\ncy.intercept('GET', 'api/races?status=PENDING', {\n    statusCode: 404,\n    delay: 500\n}).as('getRacesError');\ncy.visit('/races');\n// loading\ncy.contains('div', 'Loading');\ncy.wait('@getRacesError');\ncy.contains('div.alert', 'An error occurred while loading');",
               "err": {},
-              "uuid": "47127815-d1b2-4ab7-b023-590be0487560",
-              "parentUUID": "0ac83d79-6bd1-469e-84dd-ca94ac368d9e",
+              "uuid": "1cd714f6-8220-4bb4-9c78-894f1ce3773c",
+              "parentUUID": "7355db0c-9184-40d4-bbe9-0bab220b94bc",
               "isHook": false,
               "skipped": false
             },
@@ -74,7 +74,7 @@
               "title": "should display ponies",
               "fullTitle": "Races should display ponies",
               "timedOut": null,
-              "duration": 60,
+              "duration": 61,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -83,17 +83,17 @@
               "context": null,
               "code": "cy.visit('/races');\ncy.wait('@getRaces');\ncy.get('figure').should('have.length', 10);\ncy.get('img').should('have.length', 10);\ncy.get('figcaption').should('have.length', 10);",
               "err": {},
-              "uuid": "b534bdbc-fa5c-42f8-a4ac-ede6c851ed99",
-              "parentUUID": "0ac83d79-6bd1-469e-84dd-ca94ac368d9e",
+              "uuid": "51126068-517e-487c-89ac-c257f44f8a11",
+              "parentUUID": "7355db0c-9184-40d4-bbe9-0bab220b94bc",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "d5cc253e-826c-4aeb-b6bb-04ebda94d894",
-            "47127815-d1b2-4ab7-b023-590be0487560",
-            "b534bdbc-fa5c-42f8-a4ac-ede6c851ed99"
+            "26a2ef6c-dedf-4f72-9c5f-b5fb344fc280",
+            "1cd714f6-8220-4bb4-9c78-894f1ce3773c",
+            "51126068-517e-487c-89ac-c257f44f8a11"
           ],
           "failures": [],
           "pending": [],
