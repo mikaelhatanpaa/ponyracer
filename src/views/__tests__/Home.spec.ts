@@ -1,18 +1,16 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { mount, RouterLinkStub } from '@vue/test-utils';
-import { nextTick, ref } from 'vue';
+import { nextTick } from 'vue';
+import { createVitestPinia } from '@/__tests__/pinia';
 import Home from '@/views/Home.vue';
 import { UserModel } from '@/models/UserModel';
-import { useUserService } from '@/composables/UserService';
+import { useUserStore } from '@/composables/UserStore';
 
-let mockUserService: ReturnType<typeof useUserService>;
-vi.mock('@/composables/UserService', () => ({
-  useUserService: () => mockUserService
-}));
-
+const pinia = createVitestPinia();
 function homeWrapper() {
   return mount(Home, {
     global: {
+      plugins: [pinia],
       stubs: {
         RouterLink: RouterLinkStub
       }
@@ -22,9 +20,8 @@ function homeWrapper() {
 
 describe('Home.vue', () => {
   beforeEach(() => {
-    mockUserService = {
-      userModel: ref<UserModel | null>(null)
-    } as ReturnType<typeof useUserService>;
+    const userStore = useUserStore();
+    userStore.userModel = null;
   });
 
   test('should display every race name in a title', () => {
@@ -86,7 +83,8 @@ describe('Home.vue', () => {
     const wrapper = homeWrapper();
 
     // if the user is logged in
-    mockUserService.userModel.value = {
+    const userStore = useUserStore();
+    userStore.userModel = {
       login: 'cedric',
       money: 200,
       birthYear: 1986,

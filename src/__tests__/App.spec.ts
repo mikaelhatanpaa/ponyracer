@@ -4,6 +4,7 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
 import { injectRouterMock, RouterMock } from 'vue-router-mock';
 import { createVitestRouterMock } from './router-mock';
+import { createVitestPinia } from './pinia';
 import App from '@/App.vue';
 import Navbar from '@/components/Navbar.vue';
 import Alert from '@/components/Alert.vue';
@@ -33,6 +34,11 @@ function appWrapper(stubs = {}) {
   injectRouterMock(mockRouter);
   return mount(App, {
     global: {
+      plugins: [
+        createVitestPinia({
+          stubActions: false
+        })
+      ],
       components: {
         Alert
       },

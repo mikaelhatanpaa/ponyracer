@@ -1,39 +1,34 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { mount, RouterLinkStub } from '@vue/test-utils';
-import { nextTick, ref } from 'vue';
+import { nextTick } from 'vue';
 import { getRouter, injectRouterMock } from 'vue-router-mock';
 import { createVitestRouterMock } from '@/__tests__/router-mock';
+import { createVitestPinia } from '@/__tests__/pinia';
 import Navbar from '@/components/Navbar.vue';
 import { UserModel } from '@/models/UserModel';
-import { useUserService } from '@/composables/UserService';
+import { useUserStore } from '@/composables/UserStore';
 
-let mockUserService: ReturnType<typeof useUserService>;
-vi.mock('@/composables/UserService', () => ({
-  useUserService: () => mockUserService
-}));
 const router = createVitestRouterMock();
 
-function navbarWrapper() {
+async function navbarWrapper() {
   injectRouterMock(router);
-  return mount(Navbar, {
+  const wrapper = mount(Navbar, {
     global: {
+      plugins: [createVitestPinia()],
       stubs: {
         RouterLink: RouterLinkStub
       }
     }
   });
+  const userStore = useUserStore();
+  userStore.userModel = null;
+  await nextTick();
+  return wrapper;
 }
 
 describe('Navbar.vue', () => {
-  beforeEach(() => {
-    mockUserService = {
-      userModel: ref<UserModel | null>(null),
-      logoutAndForget: vi.fn() as () => void
-    } as ReturnType<typeof useUserService>;
-  });
-
   test('should toggle the class on click', async () => {
-    const wrapper = navbarWrapper();
+    const wrapper = await navbarWrapper();
     const navbarCollapsed = wrapper.get('#navbar').element;
 
     // The element with the id `#navbar` should have the class `collapse`
@@ -50,8 +45,8 @@ describe('Navbar.vue', () => {
     expect(navbar.className).not.toContain('navbar-collapse collapse');
   });
 
-  test('should display a link to the home page', () => {
-    const wrapper = navbarWrapper();
+  test('should display a link to the home page', async () => {
+    const wrapper = await navbarWrapper();
     // The navbar brand should link to the home page
     const navbarBrand = wrapper.getComponent(RouterLinkStub);
 
@@ -68,14 +63,15 @@ describe('Navbar.vue', () => {
   });
 
   test('should display a link to the races page', async () => {
-    const wrapper = navbarWrapper();
+    const wrapper = await navbarWrapper();
     const linksNotLogged = wrapper.findAllComponents(RouterLinkStub);
 
     // You should have only one link in the navbar if the user is not logged
     expect(linksNotLogged).toHaveLength(1);
 
     // if the user is logged in
-    mockUserService.userModel.value = {
+    const userStore = useUserStore();
+    userStore.userModel = {
       login: 'cedric',
       money: 200,
       birthYear: 1986,
@@ -105,10 +101,11 @@ describe('Navbar.vue', () => {
   });
 
   test('should display the logged in user', async () => {
-    const wrapper = navbarWrapper();
+    const wrapper = await navbarWrapper();
 
     // if the user is logged in
-    mockUserService.userModel.value = {
+    const userStore = useUserStore();
+    userStore.userModel = {
       login: 'cedric',
       money: 200,
       birthYear: 1986,
@@ -125,26 +122,23 @@ describe('Navbar.vue', () => {
     expect(info.text()).toContain('200');
 
     // and react to changes
-    mockUserService.userModel.value.money = 300;
+    userStore.userModel.money = 3000;
     await nextTick();
 
     // You should display the user's score in a `span` element
-    expect(info.text()).toContain('300');
+    expect(info.text()).toContain('3000');
   });
 
   test('should logout the user', async () => {
-    const wrapper = navbarWrapper();
+    const wrapper = await navbarWrapper();
     const mockRouter = getRouter();
-
-    // if the user is not logged in
-    mockUserService.userModel.value = null;
-    await nextTick();
 
     // You should not have a link to logout the user if he/she is not logged in
     expect(wrapper.find('#logout-link').exists()).toBe(false);
 
     // if the user is logged in
-    mockUserService.userModel.value = {
+    const userStore = useUserStore();
+    userStore.userModel = {
       login: 'cedric',
       money: 200,
       birthYear: 1986,
@@ -161,8 +155,8 @@ describe('Navbar.vue', () => {
     // click on the logout link
     link.trigger('click');
 
-    // should call the `logoutAndForget` function from `useUserService`
-    expect(mockUserService.logoutAndForget).toHaveBeenCalled();
+    // should call the `logoutAndForget` function from `useUserStore`
+    expect(userStore.logoutAndForget).toHaveBeenCalled();
     // and redirect to the home page
     expect(mockRouter.push).toHaveBeenCalled();
   });

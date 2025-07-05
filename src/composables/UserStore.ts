@@ -1,6 +1,7 @@
 import axios from 'axios';
 import UserModel from '@/models/UserModel';
 import { ref } from 'vue';
+import { defineStore } from 'pinia';
 
 export function retrieveUser(): UserModel | null {
   const localStorage = window.localStorage;
@@ -17,7 +18,7 @@ function storeLoggedInUser(user: UserModel) {
 
 export const userModel = ref<UserModel | null>(retrieveUser());
 
-export function useUserService() {
+export const useUserStore = defineStore('user', () => {
   return {
     async register(user: UserModel): Promise<UserModel> {
       const response = await axios.post<UserModel>('https://ponyracer.ninja-squad.com/api/users', user);
@@ -37,4 +38,4 @@ export function useUserService() {
       window.localStorage.removeItem('rememberMe');
     }
   };
-}
+});

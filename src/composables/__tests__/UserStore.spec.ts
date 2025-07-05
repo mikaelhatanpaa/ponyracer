@@ -1,6 +1,8 @@
-import { describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import axios, { AxiosResponse } from 'axios';
-import { retrieveUser, useUserService } from '@/composables/UserService';
+import { setActivePinia } from 'pinia';
+import { createVitestPinia } from '@/__tests__/pinia';
+import { retrieveUser, useUserStore } from '@/composables/UserStore';
 import { UserModel } from '@/models/UserModel';
 
 const userModel: UserModel = {
@@ -10,7 +12,11 @@ const userModel: UserModel = {
   money: 1000
 };
 
-describe('useUserService', () => {
+describe('useUserStore', () => {
+  beforeEach(() => {
+    setActivePinia(createVitestPinia({ stubActions: false }));
+  });
+
   test('should register a user', async () => {
     vi.spyOn(Storage.prototype, 'setItem');
     vi.spyOn(axios, 'post').mockResolvedValue({ data: userModel } as AxiosResponse<UserModel>);
@@ -21,15 +27,15 @@ describe('useUserService', () => {
       birthYear: 1986
     };
 
-    const userService = useUserService();
-    const userReceived = await userService.register(formValues);
+    const userStore = useUserStore();
+    const userReceived = await userStore.register(formValues);
 
     // It should post the user to the API
     expect(axios.post).toHaveBeenCalledWith('https://ponyracer.ninja-squad.com/api/users', formValues);
     // It should return a user for the `register` function
     expect(userReceived).toStrictEqual(userModel);
     // It should store the user with the `storeLoggedInUser` function
-    expect(userService.userModel.value).toStrictEqual(userModel);
+    expect(userStore.userModel).toStrictEqual(userModel);
     expect(Storage.prototype.setItem).toHaveBeenCalledWith('rememberMe', JSON.stringify(userModel));
   });
 
@@ -42,15 +48,15 @@ describe('useUserService', () => {
       password: 'password'
     };
 
-    const userService = useUserService();
-    const userReceived = await userService.authenticate(formValues);
+    const userStore = useUserStore();
+    const userReceived = await userStore.authenticate(formValues);
 
     // It should post the user to the API
     expect(axios.post).toHaveBeenCalledWith('https://ponyracer.ninja-squad.com/api/users/authentication', formValues);
     // It should return a user for the `authenticate` function
     expect(userReceived).toStrictEqual(userModel);
     // It should store the user with the `storeLoggedInUser` function
-    expect(userService.userModel.value).toStrictEqual(userModel);
+    expect(userStore.userModel).toStrictEqual(userModel);
     expect(Storage.prototype.setItem).toHaveBeenCalledWith('rememberMe', JSON.stringify(userModel));
   });
 
@@ -74,12 +80,12 @@ describe('useUserService', () => {
 
   test('should logout the user', () => {
     vi.spyOn(Storage.prototype, 'removeItem');
-    const userService = useUserService();
-    userService.userModel.value = userModel;
+    const userStore = useUserStore();
+    userStore.userModel = userModel;
 
-    userService.logoutAndForget();
+    userStore.logoutAndForget();
 
-    expect(userService.userModel.value).toBeNull();
+    expect(userStore.userModel).toBeNull();
     expect(Storage.prototype.removeItem).toHaveBeenCalledWith('rememberMe');
   });
 });

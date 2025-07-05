@@ -33,20 +33,22 @@
 </template>
 
 <script setup lang="ts">
-import { useUserService } from '@/composables/UserService';
+import { useUserStore } from '@/composables/UserStore';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
 
 const navbarCollapsed = ref<boolean>(true);
 const router = useRouter();
-const { userModel, logoutAndForget } = useUserService();
+const userStore = useUserStore();
+const { userModel } = storeToRefs(userStore);
 
 function toggleNavbar() {
   navbarCollapsed.value = !navbarCollapsed.value;
 }
 
 function logout() {
-  logoutAndForget();
+  userStore.logoutAndForget();
   router.push({ name: 'home' });
 }
 </script>

@@ -26,19 +26,19 @@
 <script setup lang="ts">
 import { Field, Form, ErrorMessage } from 'vee-validate';
 import { useForms } from '@/composables/Forms';
-import { useUserService } from '@/composables/UserService';
+import { useUserStore } from '@/composables/UserStore';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 
 useForms();
-const userService = useUserService();
+const userStore = useUserStore();
 const router = useRouter();
 const authenticationFailed = ref<boolean>(false);
 
 const authenticate = async (values: Record<string, unknown>) => {
   try {
     authenticationFailed.value = false;
-    await userService.authenticate(values as { login: string; password: string });
+    await userStore.authenticate(values as { login: string; password: string });
     router.push({ name: 'home' });
   } catch (error) {
     authenticationFailed.value = true;
