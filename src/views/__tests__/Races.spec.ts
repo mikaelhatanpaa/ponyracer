@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { flushPromises, mount } from '@vue/test-utils';
+import { flushPromises, mount, RouterLinkStub } from '@vue/test-utils';
 import { defineComponent } from 'vue';
 import Races from '@/views/Races.vue';
 import Race from '@/components/Race.vue';
@@ -18,7 +18,13 @@ const AsyncWrapper = defineComponent({
 });
 
 async function asyncWrapper() {
-  const wrapper = mount(AsyncWrapper);
+  const wrapper = mount(AsyncWrapper, {
+    global: {
+      stubs: {
+        RouterLink: RouterLinkStub
+      }
+    }
+  });
   await flushPromises();
   return wrapper;
 }
@@ -36,5 +42,11 @@ describe('Races.vue', () => {
 
     // You should have a `Race` component per race in your template
     expect(raceComponents).toHaveLength(2);
+
+    // You should have a `RouterLink` per race to go to the bet page
+    const links = wrapper.findAllComponents(RouterLinkStub);
+
+    expect(links).toHaveLength(2);
+    expect(links[0].text()).toBe('Bet on London');
   });
 });

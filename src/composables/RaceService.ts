@@ -11,6 +11,19 @@ export function useRaceService() {
       });
 
       return response.data;
+    },
+
+    async get(raceId: number): Promise<RaceModel> {
+      const response = await axios.get<RaceModel>(`https://ponyracer.ninja-squad.com/api/races/${raceId}`);
+      return response.data;
+    },
+    async bet(raceId: number, ponyId: number): Promise<RaceModel> {
+      const response = await axios.post<RaceModel>(`https://ponyracer.ninja-squad.com/api/races/${raceId}/bets`, { ponyId });
+      return response.data;
+    },
+
+    async cancelBet(raceId: number): Promise<void> {
+      await axios.delete(`https://ponyracer.ninja-squad.com/api/races/${raceId}/bets`);
     }
   };
 }

@@ -106,4 +106,30 @@ describe('Ponyracer', () => {
     // and home page offers the login link
     cy.get('.btn-primary').contains('Login').should('have.attr', 'href', '/login');
   });
+
+  it('should animate the transition when the user logs out', () => {
+    storeUserInLocalStorage();
+    cy.visit('/');
+
+    // user stored should be displayed
+    cy.get('#current-user').should('contain', 'cedric').and('contain', '1000');
+
+    // logout
+    cy.get('span.fa.fa-power-off').click();
+
+    // beginning of the transition
+    cy.contains('Races').parent().should('have.class', 'fade-leave-active');
+    // end of the transition
+    cy.contains('Login').parent().should('have.class', 'fade-enter-active');
+
+    // should still be on the home page
+    cy.location('pathname')
+      .should('eq', '/')
+      // and localStorage should be clean
+      .and(() => expect(localStorage.getItem('rememberMe')).to.eq(null));
+    cy.get(navbarLink).should('not.exist');
+
+    // user is not displayed in navbar
+    cy.get('#current-user').should('not.exist');
+  });
 });

@@ -41,7 +41,7 @@ describe('Login', () => {
     cy.location('pathname').should('eq', '/');
   });
 
-  it('should display an alert if login fails', () => {
+  it('should display an alert and shake the button if login fails', () => {
     cy.visit('/login');
 
     cy.intercept('POST', 'api/users/authentication', {
@@ -51,11 +51,13 @@ describe('Login', () => {
     loginInput().type('ced');
     passwordInput().type('pa');
 
+    submitButton().should('not.have.class', 'shake');
     submitButton().click();
     cy.wait('@failedAuthenticateUser');
 
     cy.location('pathname').should('eq', '/login');
 
     cy.get('.alert-danger').should('contain', 'Nope, try again');
+    submitButton().should('have.class', 'shake');
   });
 });

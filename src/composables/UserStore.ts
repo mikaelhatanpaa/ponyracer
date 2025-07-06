@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { InternalAxiosRequestConfig } from 'axios';
 import UserModel from '@/models/UserModel';
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
@@ -17,6 +17,14 @@ function storeLoggedInUser(user: UserModel) {
 }
 
 export const userModel = ref<UserModel | null>(retrieveUser());
+
+axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  if (userModel.value) {
+    config.headers!.Authorization = `Bearer ${userModel.value.token}`;
+  }
+
+  return config;
+});
 
 export const useUserStore = defineStore('user', () => {
   return {
