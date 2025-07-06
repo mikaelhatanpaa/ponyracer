@@ -5,9 +5,9 @@
     "passes": 3,
     "pending": 0,
     "failures": 0,
-    "start": "2025-07-06T14:36:32.040Z",
-    "end": "2025-07-06T14:36:32.759Z",
-    "duration": 719,
+    "start": "2025-07-06T14:57:49.919Z",
+    "end": "2025-07-06T14:57:50.634Z",
+    "duration": 715,
     "testsRegistered": 3,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "70fd6e2e-a150-494c-9ed1-a504c90b65d6",
+      "uuid": "d02152c6-3bdf-4824-b33a-f96c4c4f2921",
       "title": "",
       "fullFile": "cypress/e2e/races.cy.ts",
       "file": "cypress/e2e/races.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "e23b4507-80a7-4867-9dbf-e2668f610c5e",
+          "uuid": "c1d50b09-6587-4f51-b82a-6f8c4663fe19",
           "title": "Races",
           "fullFile": "",
           "file": "",
@@ -47,8 +47,8 @@
               "context": null,
               "code": "cy.visit('/races');\n// loading\ncy.contains('div', 'Loading');\ncy.wait('@getRaces');\ncy.get('h2').should('have.length', 2);\ncy.get('p').should('have.length', 2).and('contain', 'ago');\ncy.get('div.alert').should('not.exist');",
               "err": {},
-              "uuid": "b1d849b2-591d-46ad-9b76-c3514c71e71c",
-              "parentUUID": "e23b4507-80a7-4867-9dbf-e2668f610c5e",
+              "uuid": "f9a67cb1-6bab-46dd-9a0d-bb02b18c8e9b",
+              "parentUUID": "c1d50b09-6587-4f51-b82a-6f8c4663fe19",
               "isHook": false,
               "skipped": false
             },
@@ -56,7 +56,7 @@
               "title": "should display a loading error",
               "fullTitle": "Races should display a loading error",
               "timedOut": null,
-              "duration": 549,
+              "duration": 546,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -65,8 +65,8 @@
               "context": null,
               "code": "// override the response to have an error\ncy.intercept('GET', 'api/races?status=PENDING', {\n    statusCode: 404,\n    delay: 500\n}).as('getRacesError');\ncy.visit('/races');\n// loading\ncy.contains('div', 'Loading');\ncy.wait('@getRacesError');\ncy.contains('div.alert', 'An error occurred while loading');",
               "err": {},
-              "uuid": "21bdb068-8daf-43a1-a70b-961a80239ae4",
-              "parentUUID": "e23b4507-80a7-4867-9dbf-e2668f610c5e",
+              "uuid": "43e35390-5ea0-4f20-8bb5-ec9257801b63",
+              "parentUUID": "c1d50b09-6587-4f51-b82a-6f8c4663fe19",
               "isHook": false,
               "skipped": false
             },
@@ -83,22 +83,22 @@
               "context": null,
               "code": "cy.visit('/races');\ncy.wait('@getRaces');\ncy.get('figure').should('have.length', 10);\ncy.get('img').should('have.length', 10);\ncy.get('figcaption').should('have.length', 10);",
               "err": {},
-              "uuid": "bc7fd010-fd8b-4235-a8da-b3e99558caee",
-              "parentUUID": "e23b4507-80a7-4867-9dbf-e2668f610c5e",
+              "uuid": "5e3f5a50-4078-4b5c-ba24-8896a9ca235f",
+              "parentUUID": "c1d50b09-6587-4f51-b82a-6f8c4663fe19",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "b1d849b2-591d-46ad-9b76-c3514c71e71c",
-            "21bdb068-8daf-43a1-a70b-961a80239ae4",
-            "bc7fd010-fd8b-4235-a8da-b3e99558caee"
+            "f9a67cb1-6bab-46dd-9a0d-bb02b18c8e9b",
+            "43e35390-5ea0-4f20-8bb5-ec9257801b63",
+            "5e3f5a50-4078-4b5c-ba24-8896a9ca235f"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 685,
+          "duration": 682,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000

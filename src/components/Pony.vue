@@ -1,5 +1,5 @@
 <template>
-  <div @click="clicked">
+  <div :style="{ marginLeft }" @click="clicked">
     <figure>
       <img :src="ponyImageURL" :alt="ponyModel.name" />
       <figcaption>{{ ponyModel.name }}</figcaption>
@@ -14,9 +14,10 @@ import { computed, defineProps, defineEmits } from 'vue';
 interface Props {
   ponyModel: PonyModel;
   isRunning?: boolean;
+  marginLeft?: string;
 }
 
-const { ponyModel, isRunning = false } = defineProps<Props>();
+const { ponyModel, isRunning = false, marginLeft } = defineProps<Props>();
 
 const emit = defineEmits<{
   ponySelected: [];

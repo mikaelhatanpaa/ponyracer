@@ -27,14 +27,14 @@
       <span class="fa fa-flag" style="font-size: x-large"></span>
     </div>
     <div style="width: 95%; border-right: 3px dotted lightgray">
-      <Pony
+      <div
         v-for="pony of runningPonies"
         :key="pony.id"
-        :ponyModel="pony"
-        :isRunning="true"
         :style="{ marginLeft: `${pony.position - 5}%`, transition: 'all linear 1s' }"
         :class="{ selected: pony.id === raceModel.betPonyId }"
-      />
+      >
+        <Pony :ponyModel="pony" :isRunning="true" :marginLeft="`${pony.position - 5}%`" />
+      </div>
     </div>
   </div>
 </template>
