@@ -30,10 +30,11 @@
       <div
         v-for="pony of runningPonies"
         :key="pony.id"
-        :style="{ marginLeft: `${pony.position - 5}%`, transition: 'all linear 1s' }"
+        :style="{ marginLeft: `${pony.position - 5}%` }"
         :class="{ selected: pony.id === raceModel.betPonyId }"
+        style="transition: all linear 1s"
       >
-        <Pony :ponyModel="pony" :isRunning="true" :marginLeft="`${pony.position - 5}%`" />
+        <Pony :ponyModel="pony" :isRunning="true" :isBoosted="pony.boosted" @ponySelected="cheer(+pony.id)" />
       </div>
     </div>
   </div>
@@ -50,6 +51,11 @@ import { computed } from 'vue';
 import fromNow from '@/utils/FromNow';
 import { PonyModelWithPositionModel } from '@/models/PonyModel';
 import Pony from '@/components/Pony.vue';
+
+interface Cheer {
+  ponyId: number;
+  timeStamp: number;
+}
 
 let connection: Connection | null = null;
 onUnmounted(() => connection?.disconnect());
@@ -80,6 +86,28 @@ if (raceModel.value.status !== 'FINISHED') {
     });
   } catch (e) {
     error.value = true;
+  }
+}
+
+let cheersCounter: Array<Cheer> = [];
+async function cheer(ponyId: number) {
+  const cheer = { ponyId, timeStamp: Date.now() };
+  const last = cheersCounter[cheersCounter.length - 1];
+
+  if (!last || last.ponyId !== ponyId) {
+    cheersCounter = [cheer];
+    return;
+  }
+
+  cheersCounter.push(cheer);
+  if (cheersCounter.length >= 5) {
+    const first = cheersCounter[0];
+    if (cheer.timeStamp - first.timeStamp < 1000) {
+      cheersCounter = [];
+      await raceService.boost(+raceModel.value!.id, ponyId);
+    } else {
+      cheersCounter.splice(0, 1);
+    }
   }
 }
 

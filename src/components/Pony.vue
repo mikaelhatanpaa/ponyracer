@@ -1,30 +1,35 @@
 <template>
-  <div :style="{ marginLeft }" @click="clicked">
-    <figure>
-      <img :src="ponyImageURL" :alt="ponyModel.name" />
-      <figcaption>{{ ponyModel.name }}</figcaption>
-    </figure>
-  </div>
+  <figure @click="clicked()">
+    <img :src="ponyImageUrl" :alt="ponyModel.name" />
+    <figcaption>{{ ponyModel.name }}</figcaption>
+  </figure>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { PonyModel } from '@/models/PonyModel';
-import { computed, defineProps, defineEmits } from 'vue';
 
-interface Props {
+const {
+  ponyModel,
+  isRunning = false,
+  isBoosted = false
+} = defineProps<{
   ponyModel: PonyModel;
   isRunning?: boolean;
-  marginLeft?: string;
-}
-
-const { ponyModel, isRunning = false, marginLeft } = defineProps<Props>();
+  isBoosted?: boolean;
+}>();
 
 const emit = defineEmits<{
   ponySelected: [];
 }>();
 
-const ponyImageURL = computed(() => `/images/pony-${ponyModel.color.toLowerCase()}${isRunning ? '-running' : ''}.gif`);
-const clicked = () => emit('ponySelected');
+function clicked() {
+  emit('ponySelected');
+}
+
+const ponyImageUrl = computed(
+  () => `/images/pony-${ponyModel.color.toLowerCase()}${isBoosted ? '-rainbow' : isRunning ? '-running' : ''}.gif`
+);
 </script>
 
 <style scoped>

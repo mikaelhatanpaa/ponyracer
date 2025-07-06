@@ -6,4 +6,5 @@ export interface PonyModel {
 
 export interface PonyModelWithPositionModel extends PonyModel {
   position: number;
+  boosted?: boolean;
 }

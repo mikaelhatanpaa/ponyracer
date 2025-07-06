@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { defineComponent } from 'vue';
 import { flushPromises, mount } from '@vue/test-utils';
 import { injectRouterMock } from 'vue-router-mock';
@@ -130,11 +130,11 @@ describe('Live.vue', () => {
     // Given a running race
     const liveRace: LiveRaceModel = {
       ponies: [
-        { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 50 },
-        { id: 2, name: 'Big Soda', color: 'ORANGE', position: 20 },
-        { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 20 },
-        { id: 4, name: 'Superb Whiskey', color: 'GREEN', position: 20 },
-        { id: 5, name: 'Fast Rainbow', color: 'BLUE', position: 20 }
+        { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 50, boosted: false },
+        { id: 2, name: 'Big Soda', color: 'ORANGE', position: 20, boosted: false },
+        { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 20, boosted: false },
+        { id: 4, name: 'Superb Whiskey', color: 'GREEN', position: 20, boosted: false },
+        { id: 5, name: 'Fast Rainbow', color: 'BLUE', position: 20, boosted: false }
       ],
       status: 'RUNNING'
     };
@@ -185,8 +185,8 @@ describe('Live.vue', () => {
     // Given a running race
     const liveRace: LiveRaceModel = {
       ponies: [
-        { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 0 },
-        { id: 2, name: 'Big Soda', color: 'ORANGE', position: 0 }
+        { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 0, boosted: false },
+        { id: 2, name: 'Big Soda', color: 'ORANGE', position: 0, boosted: false }
       ],
       status: 'RUNNING'
     };
@@ -259,9 +259,9 @@ describe('Live.vue', () => {
     const wrapper = await liveWrapper();
     const liveComponent = wrapper.getComponent(Live).vm as unknown as { runningPonies: Array<PonyWithPositionModel> };
     liveComponent.runningPonies = [
-      { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 100 },
-      { id: 2, name: 'Big Soda', color: 'ORANGE', position: 90 },
-      { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 100 }
+      { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 100, boosted: false },
+      { id: 2, name: 'Big Soda', color: 'ORANGE', position: 90, boosted: false },
+      { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 100, boosted: false }
     ];
     await flushPromises();
 
@@ -313,9 +313,9 @@ describe('Live.vue', () => {
     const wrapper = await liveWrapper();
     const liveComponent = wrapper.getComponent(Live).vm as unknown as { runningPonies: Array<PonyWithPositionModel> };
     liveComponent.runningPonies = [
-      { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 100 },
-      { id: 2, name: 'Big Soda', color: 'ORANGE', position: 90 },
-      { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 100 }
+      { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 100, boosted: false },
+      { id: 2, name: 'Big Soda', color: 'ORANGE', position: 90, boosted: false },
+      { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 100, boosted: false }
     ];
     await flushPromises();
 
@@ -417,5 +417,135 @@ describe('Live.vue', () => {
 
     // It should call the disconnect function on destruction only if it exists
     expect(connection.disconnect).toHaveBeenCalledTimes(1);
+  });
+
+  describe('boost', () => {
+    beforeEach(() => {
+      // Use fake timers for these tests to enable jumping in time
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      // Restore the timers
+      vi.useRealTimers();
+    });
+
+    test('should boost a pony if clicked 5 times in less than a second', async () => {
+      // Given a running race
+      mockRaceService.get.mockResolvedValue({ ...race, status: 'RUNNING' });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      mockRaceService.boost.mockResolvedValue({} as any);
+
+      const connection = { disconnect: vi.fn() };
+      mockWsService.connect.mockReturnValueOnce(connection);
+
+      const wrapper = await liveWrapper();
+      const liveComponent = wrapper.getComponent(Live).vm as unknown as { runningPonies: Array<PonyWithPositionModel> };
+      liveComponent.runningPonies = [
+        { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 0, boosted: true },
+        { id: 2, name: 'Big Soda', color: 'ORANGE', position: 0, boosted: false },
+        { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 0, boosted: false }
+      ];
+      await flushPromises();
+
+      // Should bind the props isBoosted
+      const firstPony = wrapper.getComponent(Pony);
+
+      expect(firstPony.props().isBoosted).toBe(true);
+
+      // If the user clicks on the first pony 5 times every 200ms
+      const emit = firstPony.vm.$emit as (event: string) => void;
+      emit('ponySelected');
+      vi.advanceTimersByTime(200);
+      emit('ponySelected');
+      vi.advanceTimersByTime(200);
+      emit('ponySelected');
+      vi.advanceTimersByTime(200);
+      emit('ponySelected');
+      vi.advanceTimersByTime(200);
+      emit('ponySelected');
+
+      // Then we should have a boost triggered
+      expect(mockRaceService.boost).toHaveBeenCalledWith(12, 1);
+    });
+
+    test('should not boost a pony if clicked 5 times in more than a second', async () => {
+      // Given a running race
+      mockRaceService.get.mockResolvedValue({ ...race, status: 'RUNNING' });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      mockRaceService.boost.mockResolvedValue({} as any);
+
+      const connection = { disconnect: vi.fn() };
+      mockWsService.connect.mockReturnValueOnce(connection);
+
+      const wrapper = await liveWrapper();
+      const liveComponent = wrapper.getComponent(Live).vm as unknown as { runningPonies: Array<PonyWithPositionModel> };
+      liveComponent.runningPonies = [
+        { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 0, boosted: false },
+        { id: 2, name: 'Big Soda', color: 'ORANGE', position: 0, boosted: false },
+        { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 0, boosted: false }
+      ];
+      await flushPromises();
+
+      // If the user clicks on the first pony 5 times in more than a second
+      const firstPony = wrapper.getComponent(Pony);
+      const emit = firstPony.vm.$emit as (event: string) => void;
+      emit('ponySelected');
+      vi.advanceTimersByTime(200);
+      emit('ponySelected');
+      vi.advanceTimersByTime(200);
+      emit('ponySelected');
+      vi.advanceTimersByTime(200);
+      emit('ponySelected');
+      vi.advanceTimersByTime(401);
+      emit('ponySelected');
+
+      // Then we should not have a boost triggered
+      expect(mockRaceService.boost).not.toHaveBeenCalledWith(12, 1);
+
+      // But then we have another click quickly
+      vi.advanceTimersByTime(198);
+      emit('ponySelected');
+
+      // Then we should have a boost triggered
+      expect(mockRaceService.boost).toHaveBeenCalledWith(12, 1);
+    });
+
+    test('should not boost a pony if clicked 5 times not consecutively', async () => {
+      // Given a running race
+      mockRaceService.get.mockResolvedValue({ ...race, status: 'RUNNING' });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      mockRaceService.boost.mockResolvedValue({} as any);
+
+      const connection = { disconnect: vi.fn() };
+      mockWsService.connect.mockReturnValueOnce(connection);
+
+      const wrapper = await liveWrapper();
+      const liveComponent = wrapper.getComponent(Live).vm as unknown as { runningPonies: Array<PonyWithPositionModel> };
+      liveComponent.runningPonies = [
+        { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 0, boosted: false },
+        { id: 2, name: 'Big Soda', color: 'ORANGE', position: 0, boosted: false },
+        { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 0, boosted: false }
+      ];
+      await flushPromises();
+
+      // If the user clicks on the first pony 5 times in more than a second
+      const firstPony = wrapper.getComponent(Pony);
+      const emit = firstPony.vm.$emit as (event: string) => void;
+      emit('ponySelected');
+      vi.advanceTimersByTime(200);
+      emit('ponySelected');
+      vi.advanceTimersByTime(200);
+      emit('ponySelected');
+      // click on second pony
+      wrapper.findAllComponents(Pony)[1].vm.$emit('ponySelected');
+      vi.advanceTimersByTime(200);
+      emit('ponySelected');
+      vi.advanceTimersByTime(200);
+      emit('ponySelected');
+
+      // Then we should not have a boost triggered
+      expect(mockRaceService.boost).not.toHaveBeenCalledWith(12, 1);
+    });
   });
 });

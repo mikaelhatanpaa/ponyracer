@@ -1,7 +1,7 @@
 import * as Webstomp from 'webstomp-client';
 
 interface LiveRaceModel {
-  ponies: Array<{ id: number; name: string; color: string; position: number }>;
+  ponies: Array<{ id: number; name: string; color: string; position: number; boosted?: boolean }>;
   status: 'RUNNING' | 'FINISHED';
 }
 
@@ -47,6 +47,8 @@ describe('Live', () => {
     cy.intercept('GET', 'api/races/12', race).as('getRace');
 
     cy.intercept('POST', 'api/races/12/bets', { ...race, betPonyId: 1 }).as('betRace');
+
+    cy.intercept('POST', 'api/races/12/boosts', {}).as('boostPony');
   }
 
   function storeUserInLocalStorage() {
@@ -120,7 +122,7 @@ describe('Live', () => {
     cy.get('.selected').should('have.length', 1);
   });
 
-  it('should display a running live race', () => {
+  it('should display a running live race and boost a pony', () => {
     storeUserInLocalStorage();
     const { fakeWS, wsOptions } = buildFakeWS();
 
@@ -184,7 +186,29 @@ describe('Live', () => {
         })
       );
     cy.get('img').should('have.length', 5);
-    cy.get('figure').parent().should('have.attr', 'style').and('include', 'margin-left: 45%;');
+    cy.get('figure')
+      .parent()
+      .should('have.attr', 'style')
+      .and('include', 'margin-left: 45%;')
+      .then(() =>
+        fakeWS.emulateRace({
+          ponies: [
+            { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 60, boosted: true },
+            { id: 2, name: 'Big Soda', color: 'ORANGE', position: 90 },
+            { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 70 },
+            { id: 4, name: 'Superb Whiskey', color: 'GREEN', position: 65 },
+            { id: 5, name: 'Fast Rainbow', color: 'BLUE', position: 30 }
+          ],
+          status: 'RUNNING'
+        })
+      );
+    // boost the first pony
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
+    cy.get('img').first().click().click().click().click().click().click();
+    cy.wait('@boostPony').its('request.body').should('contain', { ponyId: 1 });
+    cy.get('img').should('have.attr', 'src').and('include', '-rainbow.gif');
   });
 
   it('should display a finished live race', () => {

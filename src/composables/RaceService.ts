@@ -24,6 +24,10 @@ export function useRaceService() {
 
     async cancelBet(raceId: number): Promise<void> {
       await axios.delete(`https://ponyracer.ninja-squad.com/api/races/${raceId}/bets`);
+    },
+
+    async boost(raceId: number, ponyId: number): Promise<void> {
+      await axios.post(`https://ponyracer.ninja-squad.com/api/races/${raceId}/boosts`, { ponyId });
     }
   };
 }

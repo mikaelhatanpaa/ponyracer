@@ -56,4 +56,16 @@ describe('useRaceService', () => {
     // It should delete the bet
     expect(axios.delete).toHaveBeenCalledWith('https://ponyracer.ninja-squad.com/api/races/1/bets');
   });
+
+  test('should boost a pony in a race', async () => {
+    vi.spyOn(axios, 'post').mockResolvedValue({} as AxiosResponse);
+    const raceId = 1;
+    const ponyId = 2;
+
+    const raceService = useRaceService();
+    await raceService.boost(raceId, ponyId);
+
+    // It should boost the pony
+    expect(axios.post).toHaveBeenCalledWith('https://ponyracer.ninja-squad.com/api/races/1/boosts', { ponyId });
+  });
 });
