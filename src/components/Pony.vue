@@ -11,15 +11,18 @@
 import { PonyModel } from '@/models/PonyModel';
 import { computed, defineProps, defineEmits } from 'vue';
 
-const { ponyModel } = defineProps<{
+interface Props {
   ponyModel: PonyModel;
-}>();
+  isRunning?: boolean;
+}
+
+const { ponyModel, isRunning = false } = defineProps<Props>();
 
 const emit = defineEmits<{
   ponySelected: [];
 }>();
 
-const ponyImageURL = computed(() => '/images/pony-' + ponyModel.color.toLowerCase() + '.gif');
+const ponyImageURL = computed(() => `/images/pony-${ponyModel.color.toLowerCase()}${isRunning ? '-running' : ''}.gif`);
 const clicked = () => emit('ponySelected');
 </script>
 

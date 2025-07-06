@@ -3,10 +3,11 @@ import { mount } from '@vue/test-utils';
 import { PonyModel } from '@/models/PonyModel';
 import Pony from '@/components/Pony.vue';
 
-function ponyWrapper(ponyModel: PonyModel) {
+function ponyWrapper(ponyModel: PonyModel, isRunning = false) {
   return mount(Pony, {
     props: {
-      ponyModel
+      ponyModel,
+      isRunning
     }
   });
 }
@@ -52,5 +53,21 @@ describe('Pony.vue', () => {
     // You may have forgotten the click handler on the `figure` element
     // or to emit the `ponySelected` event in the click handler
     expect(wrapper.emitted('ponySelected')).toStrictEqual([[]]);
+  });
+
+  test('should compute the image URL for a running pony', () => {
+    const ponyModel: PonyModel = {
+      id: 1,
+      name: 'Fast Rainbow',
+      color: 'GREEN'
+    };
+
+    const wrapper = ponyWrapper(ponyModel, true);
+
+    // You should have an image for the pony
+    const image = wrapper.get('img');
+
+    // The URL built with `ponyImageUrl` is not correct
+    expect(image.attributes('src')).toBe('/images/pony-green-running.gif');
   });
 });

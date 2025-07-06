@@ -6,9 +6,10 @@
   </Alert>
   <div class="row">
     <div class="col" v-for="pony of raceModel.ponies" :key="pony.id" :class="{ selected: isPonySelected(pony) }">
-      <Pony :pony-model="pony" @pony-selected="placeOrCancelBet(pony)" />
+      <Pony :is-running="true" :pony-model="pony" @pony-selected="placeOrCancelBet(pony)" />
     </div>
   </div>
+  <RouterLink class="btn btn-primary" :to="`/races/${raceModel.id}/live`">Watch live!</RouterLink>
 </template>
 
 <script setup lang="ts">

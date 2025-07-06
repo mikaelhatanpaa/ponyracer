@@ -55,7 +55,8 @@ describe('Bet.vue', () => {
         { id: 4, name: 'Superb Whiskey', color: 'GREEN' },
         { id: 5, name: 'Fast Rainbow', color: 'BLUE' }
       ],
-      startInstant: '2020-02-18T08:02:00Z'
+      startInstant: '2020-02-18T08:02:00Z',
+      status: 'PENDING'
     };
     mockRaceService.get.mockResolvedValue(race);
 
@@ -90,7 +91,8 @@ describe('Bet.vue', () => {
         { id: 1, name: 'Gentle Pie', color: 'YELLOW' },
         { id: 2, name: 'Big Soda', color: 'ORANGE' }
       ],
-      startInstant: '2020-02-18T08:02:00Z'
+      startInstant: '2020-02-18T08:02:00Z',
+      status: 'PENDING'
     };
     mockRaceService.get.mockResolvedValue(race);
     const raceWithBet = { ...race, name: 'Paris with bet', betPonyId: 1 };
@@ -120,6 +122,7 @@ describe('Bet.vue', () => {
         { id: 2, name: 'Big Soda', color: 'ORANGE' }
       ],
       startInstant: '2020-02-18T08:02:00Z',
+      status: 'PENDING',
       betPonyId: 1
     };
 
@@ -142,7 +145,8 @@ describe('Bet.vue', () => {
         { id: 1, name: 'Gentle Pie', color: 'YELLOW' },
         { id: 2, name: 'Big Soda', color: 'ORANGE' }
       ],
-      startInstant: '2020-02-18T08:02:00Z'
+      startInstant: '2020-02-18T08:02:00Z',
+      status: 'PENDING'
     };
 
     mockRaceService.get.mockResolvedValue(race);
@@ -175,7 +179,8 @@ describe('Bet.vue', () => {
         { id: 2, name: 'Big Soda', color: 'ORANGE' }
       ],
       startInstant: '2020-02-18T08:02:00Z',
-      betPonyId: 1
+      betPonyId: 1,
+      status: 'PENDING'
     };
 
     mockRaceService.get.mockResolvedValue(race);
@@ -201,7 +206,8 @@ describe('Bet.vue', () => {
         { id: 2, name: 'Big Soda', color: 'ORANGE' }
       ],
       startInstant: '2020-02-18T08:02:00Z',
-      betPonyId: 1
+      betPonyId: 1,
+      status: 'PENDING'
     };
     mockRaceService.get.mockResolvedValue(race);
     mockRaceService.cancelBet.mockRejectedValue(new Error('Oops'));
