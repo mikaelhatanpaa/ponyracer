@@ -14,12 +14,14 @@
           </li>
         </ul>
         <ul class="navbar-nav" v-if="userModel">
-          <li class="navbar-text">
-            <span id="current-user" class="me-2">
-              {{ userModel.login }}
-              <span class="fa fa-star"></span>
-              {{ userModel.money }}
-            </span>
+          <li class="navbar-item">
+            <RouterLink :to="{ name: 'score' }" class="nav-link">
+              <span id="current-user" class="me-2">
+                {{ userModel.login }}
+                <span class="fa fa-star"></span>
+                {{ userModel.money }}
+              </span>
+            </RouterLink>
           </li>
           <li class="nav-item">
             <a id="logout-link" @click="logout()" class="nav-link" role="button">

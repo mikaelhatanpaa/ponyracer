@@ -1,10 +1,9 @@
 import { fileURLToPath, URL } from 'node:url';
-
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueDevTools from 'vite-plugin-vue-devtools';
 
-// https://vite.dev/config/
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), vueDevTools()],
   resolve: {
@@ -24,7 +23,7 @@ export default defineConfig({
             './src/views/Bet.vue',
             './src/views/Live.vue'
           ],
-          users: ['./src/views/Register.vue', './src/views/Login.vue']
+          users: ['./src/views/Register.vue', './src/views/Login.vue', './src/views/ScoreHistory.vue']
         }
       }
     }

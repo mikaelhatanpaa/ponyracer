@@ -4,7 +4,7 @@ import axios, { AxiosInterceptorManager, AxiosResponse, InternalAxiosRequestConf
 import { setActivePinia } from 'pinia';
 import { createVitestPinia } from '@/__tests__/pinia';
 import { retrieveUser, useUserStore } from '@/composables/UserStore';
-import { UserModel } from '@/models/UserModel';
+import { ScoreHistoryModel, UserModel } from '@/models/UserModel';
 
 const mockWsService = {
   connect: vi.fn()
@@ -157,5 +157,16 @@ describe('useUserStore', () => {
     // It should have called the WS service when the userModel changes
     expect(mockWsService.connect).toHaveBeenCalledTimes(2);
     expect(mockWsService.connect).toHaveBeenCalledWith('/player/3', expect.any(Function));
+  });
+
+  test('should get the score history', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({ data: [{} as ScoreHistoryModel] } as AxiosResponse<Array<ScoreHistoryModel>>);
+
+    const userStore = useUserStore();
+    const history = await userStore.getScoreHistory();
+
+    // It should get the score history
+    expect(axios.get).toHaveBeenCalledWith('https://ponyracer.ninja-squad.com/api/money/history');
+    expect(history).toStrictEqual([{}]);
   });
 });

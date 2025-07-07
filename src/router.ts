@@ -9,6 +9,7 @@ const Bet = () => import('@/views/Bet.vue');
 const FinishedRaces = () => import('@/views/FinishedRaces.vue');
 const PendingRaces = () => import('@/views/PendingRaces.vue');
 const Races = () => import('@/views/Races.vue');
+const ScoreHistory = () => import('@/views/ScoreHistory.vue');
 
 const routerPlugin = createRouter({
   history: createWebHistory(),
@@ -17,6 +18,11 @@ const routerPlugin = createRouter({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/score-history',
+      name: 'score',
+      component: ScoreHistory
     },
     {
       path: '/races',

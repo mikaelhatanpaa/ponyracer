@@ -14,6 +14,7 @@ export default mergeConfig(
         'src/__tests__/pinia.ts',
         'src/views/__tests__/vitest-canvas.ts'
       ],
+      setupFiles: ['src/views/__tests__/vitest-canvas.ts'],
       clearMocks: true,
       reporters: ['default', 'json'],
       outputFile: 'results/vitest-results.json',

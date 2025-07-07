@@ -1,5 +1,5 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
-import UserModel from '@/models/UserModel';
+import UserModel, { ScoreHistoryModel } from '@/models/UserModel';
 import { ref, watchEffect } from 'vue';
 import { defineStore } from 'pinia';
 import { Connection, useWsService } from './WsService';
@@ -45,6 +45,10 @@ export const useUserStore = defineStore('user', () => {
     async register(user: UserModel): Promise<UserModel> {
       const response = await axios.post<UserModel>('https://ponyracer.ninja-squad.com/api/users', user);
       storeLoggedInUser(response.data);
+      return response.data;
+    },
+    async getScoreHistory(): Promise<Array<ScoreHistoryModel>> {
+      const response = await axios.get<Array<ScoreHistoryModel>>('https://ponyracer.ninja-squad.com/api/money/history');
       return response.data;
     },
 

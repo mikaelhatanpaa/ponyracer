@@ -81,8 +81,8 @@ describe('Navbar.vue', () => {
 
     const links = wrapper.findAllComponents(RouterLinkStub);
 
-    // You should have only two links in the navbar if the user is logged
-    expect(links).toHaveLength(2);
+    // You should have only three links in the navbar if the user is logged
+    expect(links).toHaveLength(3);
 
     const racesLink = links[1];
 

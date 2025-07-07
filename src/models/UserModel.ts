@@ -7,4 +7,9 @@ interface UserModel {
   token?: string;
 }
 
+export interface ScoreHistoryModel {
+  instant: string;
+  money: number;
+}
+
 export default UserModel;
