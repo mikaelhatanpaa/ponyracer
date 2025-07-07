@@ -1,7 +1,8 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import UserModel from '@/models/UserModel';
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { defineStore } from 'pinia';
+import { Connection, useWsService } from './WsService';
 
 export function retrieveUser(): UserModel | null {
   const localStorage = window.localStorage;
@@ -25,7 +26,20 @@ axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
   return config;
 });
+let connection: Connection | null = null;
 
+watchEffect(() => {
+  if (connection?.disconnect) {
+    connection.disconnect();
+  }
+
+  if (userModel.value) {
+    const wsService = useWsService();
+    connection = wsService.connect<UserModel>(`/player/${userModel.value.id}`, (userWithScore: UserModel) => {
+      userModel.value!.money = userWithScore.money;
+    });
+  }
+});
 export const useUserStore = defineStore('user', () => {
   return {
     async register(user: UserModel): Promise<UserModel> {

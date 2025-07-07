@@ -1,4 +1,5 @@
 interface UserModel {
+  id?: string;
   login: string;
   password: string;
   birthYear: number;
