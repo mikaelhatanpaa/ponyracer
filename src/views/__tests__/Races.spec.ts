@@ -1,52 +1,30 @@
-import { describe, expect, test, vi } from 'vitest';
-import { flushPromises, mount, RouterLinkStub } from '@vue/test-utils';
-import { defineComponent } from 'vue';
+import { describe, expect, test } from 'vitest';
+import { mount, RouterLinkStub } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import Races from '@/views/Races.vue';
-import Race from '@/components/Race.vue';
-import { RaceModel } from '@/models/RaceModel';
 
-const mockRaceService = {
-  list: vi.fn()
-};
-vi.mock('@/composables/RaceService', () => ({
-  useRaceService: () => mockRaceService
-}));
-
-const AsyncWrapper = defineComponent({
-  components: { Races },
-  template: `<Suspense><Races/></Suspense>`
-});
-
-async function asyncWrapper() {
-  const wrapper = mount(AsyncWrapper, {
+async function racesWrapper() {
+  const wrapper = mount(Races, {
     global: {
       stubs: {
+        RouterView: { template: 'view' },
         RouterLink: RouterLinkStub
       }
     }
   });
-  await flushPromises();
+  await nextTick();
   return wrapper;
 }
 
 describe('Races.vue', () => {
-  test('should display every race name in a title', async () => {
-    mockRaceService.list.mockResolvedValue([
-      { name: 'London', startInstant: '2020-02-18T08:02:00Z' },
-      { name: 'New York', startInstant: '2020-02-18T08:03:00Z' }
-    ] as Array<RaceModel>);
-    const wrapper = await asyncWrapper();
+  test('should display two tabs', async () => {
+    const wrapper = await racesWrapper();
 
-    const racesWrapper = wrapper.findComponent(Races);
-    const raceComponents = racesWrapper.findAllComponents(Race);
-
-    // You should have a `Race` component per race in your template
-    expect(raceComponents).toHaveLength(2);
-
-    // You should have a `RouterLink` per race to go to the bet page
+    // You should have a `RouterLink` per tabs
     const links = wrapper.findAllComponents(RouterLinkStub);
 
     expect(links).toHaveLength(2);
-    expect(links[0].text()).toBe('Bet on London');
+    expect(links[0].text()).toBe('Pending races');
+    expect(links[1].text()).toBe('Finished races');
   });
 });

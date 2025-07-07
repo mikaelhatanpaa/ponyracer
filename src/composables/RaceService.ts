@@ -3,10 +3,10 @@ import axios from 'axios';
 
 export function useRaceService() {
   return {
-    async list(): Promise<Array<RaceModel>> {
+    async list(status: 'PENDING' | 'RUNNING' | 'FINISHED'): Promise<Array<RaceModel>> {
       const response = await axios.get<Array<RaceModel>>('https://ponyracer.ninja-squad.com/api/races', {
         params: {
-          status: 'PENDING'
+          status
         }
       });
 

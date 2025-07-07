@@ -9,7 +9,7 @@ describe('useRaceService', () => {
     vi.spyOn(axios, 'get').mockResolvedValue(response);
 
     const raceService = useRaceService();
-    const races = await raceService.list();
+    const races = await raceService.list('PENDING');
 
     // It should get the pending races from the API
     expect(axios.get).toHaveBeenCalledWith('https://ponyracer.ninja-squad.com/api/races', { params: { status: 'PENDING' } });
