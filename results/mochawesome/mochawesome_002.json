@@ -5,9 +5,9 @@
     "passes": 3,
     "pending": 0,
     "failures": 0,
-    "start": "2025-07-07T11:55:38.733Z",
-    "end": "2025-07-07T11:55:41.543Z",
-    "duration": 2810,
+    "start": "2025-07-07T12:35:28.136Z",
+    "end": "2025-07-07T12:35:30.893Z",
+    "duration": 2757,
     "testsRegistered": 3,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "62572b3b-2f1f-4179-97ba-d45bad780d41",
+      "uuid": "4a3a7984-3a91-46ed-97a2-be7a6ff45863",
       "title": "",
       "fullFile": "cypress/e2e/live.cy.ts",
       "file": "cypress/e2e/live.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "9ef5e766-7b86-4a73-af65-10123bf3b423",
+          "uuid": "bf691237-82f6-4d40-8d77-ddebbcd4475b",
           "title": "Live",
           "fullFile": "",
           "file": "",
@@ -38,7 +38,7 @@
               "title": "should display a pending live race",
               "fullTitle": "Live should display a pending live race",
               "timedOut": null,
-              "duration": 316,
+              "duration": 312,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -47,8 +47,8 @@
               "context": null,
               "code": "storeUserInLocalStorage();\ncy.visit('/races');\ncy.wait('@getRaces');\n// go to bet page for the first race\ncy.get('.btn-primary').first().click();\ncy.wait('@getRace');\n// bet on first pony\ncy.get('img').first().click();\ncy.wait('@betRace');\n// emulate a pending race\ncy.intercept('GET', 'api/races/12', {\n    ...race,\n    betPonyId: 2,\n    status: 'PENDING'\n}).as('getPendingRace');\n// go to live\ncy.get('.btn-primary').first().click();\ncy.location('pathname').should('eq', '/races/12/live');\ncy.wait('@getPendingRace');\n// race detail should be displayed\ncy.get('h1').should('contain', 'Paris');\ncy.get('p').should('contain', 'ago');\ncy.get('img').should('have.length', 5);\ncy.get('.selected').should('have.length', 1);",
               "err": {},
-              "uuid": "9293908f-4c7f-4ed8-a8c1-744e042e4d18",
-              "parentUUID": "9ef5e766-7b86-4a73-af65-10123bf3b423",
+              "uuid": "dcecd4b3-ec24-416a-837a-eb7ed706fbe4",
+              "parentUUID": "bf691237-82f6-4d40-8d77-ddebbcd4475b",
               "isHook": false,
               "skipped": false
             },
@@ -56,7 +56,7 @@
               "title": "should display a running live race and boost a pony",
               "fullTitle": "Live should display a running live race and boost a pony",
               "timedOut": null,
-              "duration": 1724,
+              "duration": 1694,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -65,8 +65,8 @@
               "context": null,
               "code": "storeUserInLocalStorage();\nconst { fakeWS, wsOptions } = buildFakeWS();\ncy.visit('/races', wsOptions);\ncy.wait('@getRaces');\n// go to bet page for the first race\ncy.get('.btn-primary').first().click();\ncy.wait('@getRace');\n// bet on first pony\ncy.get('img').first().click();\ncy.wait('@betRace');\n// emulate a running race\ncy.intercept('GET', 'api/races/12', {\n    ...race,\n    betPonyId: 2,\n    status: 'RUNNING'\n}).as('getRunningRace');\n// go to live\ncy.get('.btn-primary').first().click();\ncy.location('pathname').should('eq', '/races/12/live');\ncy.wait('@getRunningRace');\n// eslint-disable-next-line cypress/no-unnecessary-waiting\ncy.wait(400);\n// WebSocket connection created\ncy.get('@ws')\n    .should('be.called')\n    .then(() => fakeWS.emulateRace({\n    ponies: [\n        { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 30 },\n        { id: 2, name: 'Big Soda', color: 'ORANGE', position: 80 },\n        { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 70 },\n        { id: 4, name: 'Superb Whiskey', color: 'GREEN', position: 60 },\n        { id: 5, name: 'Fast Rainbow', color: 'BLUE', position: 30 }\n    ],\n    status: 'RUNNING'\n}));\n// running ponies should be displayed\ncy.get('h1').should('contain', 'Paris');\ncy.get('img').should('have.length', 5);\ncy.get('figure').parent().should('have.attr', 'style').and('include', 'margin-left: 25%;');\ncy.get('.selected')\n    .should('have.length', 1)\n    .then(() => fakeWS.emulateRace({\n    ponies: [\n        { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 50 },\n        { id: 2, name: 'Big Soda', color: 'ORANGE', position: 90 },\n        { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 70 },\n        { id: 4, name: 'Superb Whiskey', color: 'GREEN', position: 65 },\n        { id: 5, name: 'Fast Rainbow', color: 'BLUE', position: 30 }\n    ],\n    status: 'RUNNING'\n}));\ncy.get('img').should('have.length', 5);\ncy.get('figure')\n    .parent()\n    .should('have.attr', 'style')\n    .and('include', 'margin-left: 45%;')\n    .then(() => fakeWS.emulateRace({\n    ponies: [\n        { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 60, boosted: true },\n        { id: 2, name: 'Big Soda', color: 'ORANGE', position: 90 },\n        { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 70 },\n        { id: 4, name: 'Superb Whiskey', color: 'GREEN', position: 65 },\n        { id: 5, name: 'Fast Rainbow', color: 'BLUE', position: 30 }\n    ],\n    status: 'RUNNING'\n}));\n// boost the first pony\n// eslint-disable-next-line cypress/no-unnecessary-waiting\ncy.wait(500);\n// eslint-disable-next-line cypress/unsafe-to-chain-command\ncy.get('img').first().click().click().click().click().click().click();\ncy.wait('@boostPony').its('request.body').should('contain', { ponyId: 1 });\ncy.get('img').should('have.attr', 'src').and('include', '-rainbow.gif');",
               "err": {},
-              "uuid": "35ad1657-0a5b-491b-a46c-a1a0480bffd1",
-              "parentUUID": "9ef5e766-7b86-4a73-af65-10123bf3b423",
+              "uuid": "0af48662-8768-44ce-939a-105323f69f00",
+              "parentUUID": "bf691237-82f6-4d40-8d77-ddebbcd4475b",
               "isHook": false,
               "skipped": false
             },
@@ -74,7 +74,7 @@
               "title": "should display a finished live race",
               "fullTitle": "Live should display a finished live race",
               "timedOut": null,
-              "duration": 715,
+              "duration": 705,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -83,22 +83,22 @@
               "context": null,
               "code": "storeUserInLocalStorage();\nconst { fakeWS, wsOptions } = buildFakeWS();\ncy.visit('/races', wsOptions);\ncy.wait('@getRaces');\n// go to bet page for the first race\ncy.get('.btn-primary').first().click();\ncy.wait('@getRace');\n// bet on first pony\ncy.get('img').first().click();\ncy.wait('@betRace');\n// emulate a finished race\ncy.intercept('GET', 'api/races/12', {\n    ...race,\n    betPonyId: 2,\n    status: 'RUNNING'\n}).as('getRunningRace');\n// go to live\ncy.get('.btn-primary').first().click();\ncy.location('pathname').should('eq', '/races/12/live');\ncy.wait('@getRunningRace');\n// eslint-disable-next-line cypress/no-unnecessary-waiting\ncy.wait(400);\n// WebSocket connection created\ncy.get('@ws')\n    .should('be.called')\n    // and emulate a finished race\n    .then(() => fakeWS.emulateRace({\n    ponies: [\n        { id: 1, name: 'Gentle Pie', color: 'YELLOW', position: 30 },\n        { id: 2, name: 'Big Soda', color: 'ORANGE', position: 100 },\n        { id: 3, name: 'Gentle Bottle', color: 'PURPLE', position: 70 },\n        { id: 4, name: 'Superb Whiskey', color: 'GREEN', position: 60 },\n        { id: 5, name: 'Fast Rainbow', color: 'BLUE', position: 30 }\n    ],\n    status: 'FINISHED'\n}));\n// victorious pony should be displayed\ncy.get('h1').should('contain', 'Paris');\ncy.get('img').should('have.length', 1);\ncy.get('.selected').should('have.length', 1);\ncy.get('.alert.alert-success').should('have.text', 'You won your bet!');",
               "err": {},
-              "uuid": "b8cdaf05-5b7c-4c81-b2f9-8412f9067bf5",
-              "parentUUID": "9ef5e766-7b86-4a73-af65-10123bf3b423",
+              "uuid": "4f684101-c2eb-4a19-801a-d106e2cc5d29",
+              "parentUUID": "bf691237-82f6-4d40-8d77-ddebbcd4475b",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "9293908f-4c7f-4ed8-a8c1-744e042e4d18",
-            "35ad1657-0a5b-491b-a46c-a1a0480bffd1",
-            "b8cdaf05-5b7c-4c81-b2f9-8412f9067bf5"
+            "dcecd4b3-ec24-416a-837a-eb7ed706fbe4",
+            "0af48662-8768-44ce-939a-105323f69f00",
+            "4f684101-c2eb-4a19-801a-d106e2cc5d29"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 2755,
+          "duration": 2711,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
