@@ -5,9 +5,9 @@
     "passes": 1,
     "pending": 0,
     "failures": 0,
-    "start": "2025-07-07T16:29:15.815Z",
-    "end": "2025-07-07T16:29:16.596Z",
-    "duration": 781,
+    "start": "2025-07-07T17:04:48.325Z",
+    "end": "2025-07-07T17:04:49.116Z",
+    "duration": 791,
     "testsRegistered": 1,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "19cafeac-5522-4f52-b98e-9d4793fa95f8",
+      "uuid": "25c141ca-b6e2-43fd-bfc5-d63dc8a85d38",
       "title": "",
       "fullFile": "cypress/e2e/bet.cy.ts",
       "file": "cypress/e2e/bet.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "088e69c1-a5b2-4b2b-9532-8687cbd4a6c1",
+          "uuid": "7c32d793-50ff-4ef7-8737-7b3dcebd5750",
           "title": "Bet",
           "fullFile": "",
           "file": "",
@@ -38,7 +38,7 @@
               "title": "should bet on ponies and cancel",
               "fullTitle": "Bet should bet on ponies and cancel",
               "timedOut": null,
-              "duration": 766,
+              "duration": 774,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -47,20 +47,20 @@
               "context": null,
               "code": "storeUserInLocalStorage();\ncy.visit('/races');\ncy.wait('@getRaces');\n// go to bet page for the first race\ncy.get('.btn-primary').first().click();\ncy.wait('@getRace').its('request.headers').should('have.property', 'authorization', `Bearer ${user.token}`);\ncy.location('pathname').should('eq', '/races/12');\n// race detail should be displayed\ncy.get('h1').should('contain', 'Paris');\ncy.get('p').should('contain', 'ago');\ncy.get('img').should('have.length', 5);\n// no pony is selected\ncy.get('.selected').should('have.length', 0);\n// bet on first pony\ncy.get('img').first().click();\ncy.wait('@betRace').its('request.body').should('contain', { ponyId: 1 });\n// a pony is now selected\ncy.get('.selected').should('have.length', 1);\n// bet on the second one\ncy.intercept('POST', 'api/races/12/bets', { ...race, betPonyId: 2 }).as('secondBetRace');\ncy.get('img').eq(1).click();\ncy.wait('@secondBetRace').its('request.body').should('contain', { ponyId: 2 });\n// a pony is still selected\ncy.get('.selected').should('have.length', 1);\n// bet fails\ncy.intercept('POST', 'api/races/12/bets', {\n    statusCode: 404\n}).as('failedBetRace');\n// cancel fails\ncy.intercept('DELETE', 'api/races/12/bets', {\n    statusCode: 404\n}).as('failedCancelBetRace');\n// cancel bet on second pony\ncy.get('img').eq(1).click();\ncy.wait('@failedCancelBetRace');\n// alert should be displayed\ncy.get('.alert').should('contain', 'The race is already started or finished');\n// close alert\ncy.get('.alert button').click();\ncy.get('.alert').should('not.exist');\n// bet on first pony\ncy.get('img').first().click();\ncy.wait('@failedBetRace');\n// alert should be displayed\ncy.get('.alert').should('contain', 'The race is already started or finished');\n// close alert\ncy.get('.alert button').click();\ncy.get('.alert').should('not.exist');\ncy.intercept('DELETE', 'api/races/12/bets', {}).as('cancelBetRace');\n// cancel bet\ncy.get('img').eq(1).click();\ncy.wait('@cancelBetRace');\n// no pony is selected anymore\ncy.get('.selected').should('have.length', 0);",
               "err": {},
-              "uuid": "440dbb84-9e42-4ab9-9fe9-22e6d0a0c2d8",
-              "parentUUID": "088e69c1-a5b2-4b2b-9532-8687cbd4a6c1",
+              "uuid": "3118e37e-edb8-4044-9da3-0b987dee50dc",
+              "parentUUID": "7c32d793-50ff-4ef7-8737-7b3dcebd5750",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "440dbb84-9e42-4ab9-9fe9-22e6d0a0c2d8"
+            "3118e37e-edb8-4044-9da3-0b987dee50dc"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 766,
+          "duration": 774,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000

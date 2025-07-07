@@ -10,35 +10,29 @@
       <Form @submit="register($event)" :initialValues="initialValues" v-slot="{ meta: formMeta }">
         <Field name="login" rules="required|min:3" v-slot="{ field, meta }">
           <div class="mb-3">
-            <label for="login" class="form-label" :class="{ 'text-danger': meta.dirty && !meta.valid }">Login</label>
-            <input id="login" class="form-control" :class="{ 'is-invalid': meta.dirty && !meta.valid }" v-bind="field" />
+            <label for="login" class="form-label" v-meta-class:text-danger="meta">Login</label>
+            <input id="login" class="form-control" v-meta-class:is-invalid="meta" v-bind="field" />
             <ErrorMessage name="login" class="invalid-feedback" />
           </div>
         </Field>
         <Field name="password" rules="required" v-slot="{ field, meta }">
           <div class="mb-3">
-            <label for="password" class="form-label" :class="{ 'text-danger': meta.dirty && !meta.valid }">Password</label>
-            <input id="password" type="password" class="form-control" :class="{ 'is-invalid': meta.dirty && !meta.valid }" v-bind="field" />
+            <label for="password" class="form-label" v-meta-class:text-danger="meta">Password</label>
+            <input id="password" type="password" class="form-control" v-meta-class:is-invalid="meta" v-bind="field" />
             <ErrorMessage name="password" class="invalid-feedback" />
           </div>
         </Field>
         <Field name="confirmPassword" rules="required|confirmed:@password" label="password confirmation" v-slot="{ field, meta }">
           <div class="mb-3">
-            <label for="confirm-password" class="form-label" :class="{ 'text-danger': meta.dirty && !meta.valid }">Password</label>
-            <input
-              id="confirm-password"
-              type="password"
-              class="form-control"
-              :class="{ 'is-invalid': meta.dirty && !meta.valid }"
-              v-bind="field"
-            />
+            <label for="confirm-password" class="form-label" v-meta-class:text-danger="meta">Password confirmation</label>
+            <input id="confirm-password" type="password" class="form-control" v-meta-class:is-invalid="meta" v-bind="field" />
             <ErrorMessage name="confirmPassword" class="invalid-feedback" />
           </div>
         </Field>
         <Field name="birthYear" rules="required|min_value:1900|isOldEnough" label="birth year" v-slot="{ field, meta }">
           <div class="mb-3">
-            <label for="birth-year" class="form-label" :class="{ 'text-danger': meta.dirty && !meta.valid }">Birth year</label>
-            <input id="birth-year" type="number" class="form-control" :class="{ 'is-invalid': meta.dirty && !meta.valid }" v-bind="field" />
+            <label for="birth-year" class="form-label" v-meta-class:text-danger="meta">Birth year</label>
+            <input id="birth-year" type="number" class="form-control" v-meta-class:is-invalid="meta" v-bind="field" />
             <ErrorMessage name="birthYear" class="invalid-feedback" />
           </div>
         </Field>
@@ -55,6 +49,7 @@ import { ErrorMessage, Field, Form } from 'vee-validate';
 import UserModel from '@/models/UserModel';
 import { useUserStore } from '@/composables/UserStore';
 import { useForms } from '@/composables/Forms';
+import { vMetaClass } from '@/directives/MetaClass';
 
 useForms();
 

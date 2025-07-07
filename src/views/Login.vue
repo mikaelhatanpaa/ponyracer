@@ -5,15 +5,15 @@
     <Form @submit="authenticate($event)" v-slot="{ meta: formMeta }">
       <Field name="login" rules="required" v-slot="{ field, meta }">
         <div class="mb-3">
-          <label for="login" class="form-label" :class="{ 'text-danger': meta.dirty && !meta.valid }">Login</label>
-          <input id="login" class="form-control" :class="{ 'is-invalid': meta.dirty && !meta.valid }" v-bind="field" />
+          <label for="login" class="form-label" v-meta-class:text-danger="meta">Login</label>
+          <input id="login" class="form-control" v-meta-class:is-invalid="meta" v-bind="field" />
           <ErrorMessage name="login" class="invalid-feedback" />
         </div>
       </Field>
       <Field name="password" rules="required" v-slot="{ field, meta }">
         <div class="mb-3">
-          <label for="password" class="form-label" :class="{ 'text-danger': meta.dirty && !meta.valid }">Password</label>
-          <input id="password" type="password" class="form-control" :class="{ 'is-invalid': meta.dirty && !meta.valid }" v-bind="field" />
+          <label for="password" class="form-label" v-meta-class:text-danger="meta">Password</label>
+          <input id="password" type="password" class="form-control" v-meta-class:is-invalid="meta" v-bind="field" />
           <ErrorMessage name="password" class="invalid-feedback" />
         </div>
       </Field>
@@ -29,6 +29,7 @@ import { useForms } from '@/composables/Forms';
 import { useUserStore } from '@/composables/UserStore';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
+import { vMetaClass } from '@/directives/MetaClass';
 
 useForms();
 const userStore = useUserStore();
